@@ -266,8 +266,6 @@ function install_raspicam_fix {
     sudo cp file_templates/bcm2835-v4l2.conf /etc/modprobe.d/
 }
 
-function
-
 #### MAIN
 install_cleanup_trap
 import_config
