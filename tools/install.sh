@@ -244,7 +244,7 @@ function install_crowsnest {
 function sub_init {
     if [ ! -f "${HOME}/crowsnest/bin/ustreamer/Makefile" ] ||
     [ ! -f "${HOME}/crowsnest/bin/RTSPtoWebRTC/main.go" ]; then
-        echo -en "Submodules are not initialized ..."
+        echo -e "Submodules are not initialized ..."
         git submodule update --init > /dev/null
         echo -e "Submodules are not initialized ... [OK]"
     fi
