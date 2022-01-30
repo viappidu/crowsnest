@@ -150,47 +150,6 @@ function remove_existing_webcamd {
     echo -e "webcam.txt kept,but no longer necessary ..."
 }
 
-function install_go {
-    local sha256sum
-    if [ ! -d /usr/local/go ]; then
-        echo -e "Dependency: Go ${CROWSNEST_GOLANG_VERSION} not installed."
-        echo -en "Download Go ${CROWSNEST_GOLANG_VERSION} (${CROWSNEST_GOLANG_URL})... \r"
-        curl --silent -JLo /tmp/"${CROWSNEST_GOLANG_ARCHIVE}" \
-        "${CROWSNEST_GOLANG_URL}${CROWSNEST_GOLANG_ARCHIVE}"
-        echo -e "Download Go ${CROWSNEST_GOLANG_VERSION} (${CROWSNEST_GOLANG_URL})... [OK]"
-        sha256sum="$(sha256sum /tmp/"${CROWSNEST_GOLANG_ARCHIVE}" | cut -d ' ' -f1)"
-        echo -en "Checking sha256sum ...\r"
-        if [ "${sha256sum}" = "${CROWSNEST_GOLANG_SHA}" ]; then
-            echo -e "Checking sha256sum ... [OK]"
-        else
-            echo -e "Checking sha256sum ... [FAILED]"
-            echo -e "Aborting Install ..."
-            echo -e "Goodbye..."
-            exit 1
-        fi
-        echo -en "Installing Go ${CROWSNEST_GOLANG_VERSION} ...\r"
-        sudo tar -C "${CROWSNEST_GOLANG_GO_BIN}" -xf "/tmp/${CROWSNEST_GOLANG_ARCHIVE}"
-        echo -e "Installing Go ${CROWSNEST_GOLANG_VERSION} ... [OK]"
-        echo -en "Setup GOPATH and add 'go' to PATH ...\r"
-        if [ ! -d "${HOME}/golang" ]; then
-            mkdir -p "${HOME}"/golang
-        fi
-        if [ ! -f "${HOME}/.gorc" ]; then
-            cp file_templates/.gorc "${HOME}"
-            echo -e "\n# Add Go Variables to profile\nsource ${HOME}/.gorc\n" >> \
-            "${HOME}"/.profile
-            # shellcheck disable=SC1091
-            source "${HOME}/.profile"
-        fi
-        # Make sure PATH is set during installation
-        export PATH=${PATH}:/usr/local/go/bin
-        export GOPATH=${HOME}/golang
-        echo -e "Setup GOPATH and add to PATH ... [OK]"
-    else
-        echo -e "$(go version) is already installed ... [SKIPPED]"
-    fi
-}
-
 function install_crowsnest {
     local template servicefile logrotatefile bin_path webcamd_bin
     bin_path="/usr/local/bin"
@@ -203,7 +162,6 @@ function install_crowsnest {
     echo -e "Installing 'crowsnest' Dependencies ..."
     # shellcheck disable=2086
     sudo apt install --yes --no-install-recommends ${CROWSNEST_CROWSNEST_DEPS} > /dev/null
-    install_go
     echo -e "Installing 'crowsnest' Dependencies ... [OK]"
     ## Link webcamd to $PATH
     echo -en "Linking webcamd ...\r"
