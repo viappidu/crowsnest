@@ -4,8 +4,3 @@
 	branch = master
     ignore = untracked
 
-[submodule "bin/RTSPtoWebRTC"]
-	path = bin/RTSPtoWebRTC
-	url = https://github.com/deepch/RTSPtoWebRTC
-	branch = master
-    ignore = untracked
