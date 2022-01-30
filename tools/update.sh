@@ -183,6 +183,7 @@ function uninstall_v4l2rtsp {
     fi
 }
 
+# This removes ustreamer if not inside of crowsnest! ( $HOME/ustreamer )
 function uninstall_ustreamer {
     local bin_path ustreamer_dir
     bin_path="/usr/local/bin/ustreamer"
@@ -197,49 +198,28 @@ function uninstall_ustreamer {
         echo -e "Uninstalling '${HOME}/ustreamer' ... [OK]\r"
     fi
 }
-# Install funcs
-function install_go {
-    local sha256sum
-    if [ ! -d /usr/local/go ] ||
-    [ "$(go version | awk '{print $3}')" != "go1.17.5" ]; then
-        echo -e "Dependency: Go ${CROWSNEST_GOLANG_VERSION} not installed."
-        echo -en "Download Go ${CROWSNEST_GOLANG_VERSION} (${CROWSNEST_GOLANG_URL})... \r"
-        curl --silent -JLo /tmp/"${CROWSNEST_GOLANG_ARCHIVE}" \
-        "${CROWSNEST_GOLANG_URL}${CROWSNEST_GOLANG_ARCHIVE}"
-        echo -e "Download Go ${CROWSNEST_GOLANG_VERSION} (${CROWSNEST_GOLANG_URL})... [OK]"
-        sha256sum="$(sha256sum /tmp/"${CROWSNEST_GOLANG_ARCHIVE}" | cut -d ' ' -f1)"
-        echo -en "Checking sha256sum ...\r"
-        if [ "${sha256sum}" = "${CROWSNEST_GOLANG_SHA}" ]; then
-            echo -e "Checking sha256sum ... [OK]"
-        else
-            echo -e "Checking sha256sum ... [FAILED]"
-            echo -e "Aborting Install ..."
-            echo -e "Goodbye..."
-            exit 1
-        fi
-        echo -en "Installing Go ${CROWSNEST_GOLANG_VERSION} ...\r"
-        sudo tar -C "${CROWSNEST_GOLANG_GO_BIN}" -xf "/tmp/${CROWSNEST_GOLANG_ARCHIVE}"
-        echo -e "Installing Go ${CROWSNEST_GOLANG_VERSION} ... [OK]"
-        echo -en "Setup GOPATH and add 'go' to PATH ...\r"
-        if [ ! -d "${HOME}/golang" ]; then
-            mkdir -p "${HOME}"/golang
-        fi
-        if [ ! -f "${HOME}/.gorc" ]; then
-            cp file_templates/.gorc "${HOME}"
-            echo -e "\n# Add Go Variables to profile\nsource ${HOME}/.gorc\n" >> \
-            "${HOME}"/.profile
-            # shellcheck disable=SC1091
-            source "${HOME}/.profile"
-        fi
-        # Make sure PATH is set during installation
-        export PATH=${PATH}:/usr/local/go/bin
-        export GOPATH=${HOME}/golang
-        echo -e "Setup GOPATH and add to PATH ... [OK]"
+
+# Remove no longer needed Go installation
+function uninstall_go {
+    if [ -n "$(whereis -b go | awk '{print $2}')" ]; then
+        echo -e "\nFound $(go version)\n"
     else
-        echo -e "$(go version) is already installed ... [SKIPPED]"
+        echo -e "No Version of Go Lang found ... [SKIPPED]"
+        exit 1
+    fi
+
+    if  [ -d "/usr/local/go" ] && [ -f "${HOME}/.gorc" ]; then
+        sudo rm -rf "$(whereis -b go | awk '{print $2}')"
+        rm -f "${HOME}/.gorc"
+        sudo rm -rf "${HOME}/golang"
+        sed -i '/# Add Go/d;/.gorc/d' "${HOME}/.profile"
+        echo -e "\nUninstall complete!"
+        exit 0
     fi
 }
 
+
+# Install funcs
 # Make sure submodules are initialized
 function sub_init {
     if [ ! -f "${HOME}/crowsnest/bin/ustreamer/Makefile" ] ||
@@ -278,10 +258,10 @@ welcome_msg
 stop_webcamd
 uninstall_ustreamer
 uninstall_v4l2rtsp
+uninstall_go
 copy_service
 copy_logrotate
 copy_raspicam_fix
-install_go
 sub_init
 build_apps
 start_webcamd

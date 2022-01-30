@@ -77,6 +77,8 @@ function ask_uninstall {
             sudo echo -e "\nPlease enter your password!"
             uninstall_crowsnest
             uninstall_v4l2rtsp
+            # go unsinstaller is deprecated will be removed in future
+            uninstall_go
             remove_raspicam_fix
             remove_logrotate
             goodbye_msg
@@ -119,6 +121,24 @@ function uninstall_v4l2rtsp {
         fi
         sudo rm -rf "${v4l2rtsp_dir}"
         echo -e "Uninstalling 'v4l2rtspserver' ... [OK]\r"
+    fi
+}
+
+function uninstall_go {
+    if [ -n "$(whereis -b go | awk '{print $2}')" ]; then
+        echo -e "\nFound $(go version)\n"
+    else
+        echo -e "No Version of Go Lang found ... [SKIPPED]"
+        exit 1
+    fi
+
+    if  [ -d "/usr/local/go" ] && [ -f "${HOME}/.gorc" ]; then
+        sudo rm -rf "$(whereis -b go | awk '{print $2}')"
+        rm -f "${HOME}/.gorc"
+        sudo rm -rf "${HOME}/golang"
+        sed -i '/# Add Go/d;/.gorc/d' "${HOME}/.profile"
+        echo -e "\nUninstall complete!"
+        exit 0
     fi
 }
 

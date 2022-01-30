@@ -30,7 +30,6 @@ help:
 	@echo "   update       Updates crowsnest (if needed)"
 	@echo "   build        builds binaries"
 	@echo "   buildclean   cleans binaries (for recompile)"
-	@echo "   uninstallgo  uninstall Go Lang"
 	@echo ""
 
 install:
@@ -47,8 +46,5 @@ build:
 
 buildclean:
 	$(MAKE) -C $(BIN_FOLDER) clean
-
-uninstallgo:
-	@bash -c tools/uninstall_go.sh
 
 
