@@ -39,7 +39,7 @@ function construct_streamer {
                     log_output "INFO:"
                 fi
                 run_ffmpeg "${cams}" &
-                sleep 8 & sleep_pid="$!"; wait "${sleep_pid}"
+                sleep 3 & sleep_pid="$!"; wait "${sleep_pid}"
             ;;
             webrtc)
                 if [ -z "$(pidof rtsp-simple-server)" ]; then
@@ -50,8 +50,9 @@ function construct_streamer {
                     log_output "INFO:"
                 fi
                 run_ffmpeg "${cams}" &
-                sleep 8 & sleep_pid="$!"; wait "${sleep_pid}"
+                sleep 3 & sleep_pid="$!"; wait "${sleep_pid}"
                 run_webrtc &
+                sleep 3 & sleep_pid="$!"; wait "${sleep_pid}"
             ;;
             ?|*)
                 unknown_mode_msg

@@ -20,63 +20,56 @@ set -e
 RTC_PORT="8085"
 
 function run_webrtc {
-    generate_config
-    if [ -z "$(pidof rtsp2webrtc)" ]; then
-    run_srv &
-    fi
-    sleep 2
-}
-
-function generate_config {
-    local pt url head stream cfg tmp cnf_cm
-    pt="${RTC_PORT}"
+    local url head stream cfg cnf_cm
     url="rtsp://localhost:8554"
-    cfg="${BASE_CN_PATH}/bin/RTSPtoWebRTC/config.json"
-    tmp="/tmp/config.json"
+    cfg="/tmp/webrtc-config.json"
     # convert configured_cams to real array
     for cc in $(configured_cams); do
         cnf_cm+=( "${cc}" )
     done
     # Remove existing tmp file
-    if [ -f "${tmp}" ]; then
-        rm -f /tmp/config.json
+    if [ -f "${cfg}" ]; then
+        rm -f "${cfg}"
     fi
     # Generate config.json
-    head[0]='{\n  "server": {'
-    head[1]="\n    \"http_port\": \"0.0.0.0:${pt}\","
-    head[2]='\n    "ice_servers": ["stun:stun.l.google.com:19302"],'
-    head[3]='\n    "ice_username": "",'
-    head[4]='\n    "ice_credential": ""\n  },\n  "streams": {'
-    echo -e "${head[*]}" > "${tmp}"
+    head='{\n  "urls":{'
+    echo -e "${head}" > "${cfg}"
     for i in "${cnf_cm[@]}"; do
         c=$((c +1))
-        stream[0]="    \"${i}\": {"
-        stream[1]="\n      \"on_demand\": false,"
-        stream[2]="\n      \"disable_audio\": true,"
-        stream[3]="\n      \"url\": \"${url}/${i}\""
+        stream[0]="    \"${i}\":"
+        stream[1]="{\"video\": \"${url}/${i}\""
         if [ "${c}" -eq "${#cnf_cm[@]}" ]; then
-            stream[4]="\n    }"
+            stream[2]="}"
         else
-            stream[4]="\n    },"
+            stream[2]="},"
         fi
-        echo -e "${stream[*]}" >> "${tmp}"
+        echo -e "${stream[*]}" >> "${cfg}"
     done
-    echo -e "  }\n}" >> "${tmp}"
+    echo -e "  }\n}" >> "${cfg}"
     # Check if it needs to be updated
-    cp "${tmp}" "${cfg}"
+    run_webrtc_srv &
     return
 }
 
-function run_srv {
-    local pt rtc_bin
+function run_webrtc_srv {
+    local  rtc_bin pt cfg wwwroot start_param
+    rtc_bin="${BASE_CN_PATH}/bin/webrtc-streamer/webrtc-streamer"
     pt="${RTC_PORT}"
-    rtc_bin="${BASE_CN_PATH}/bin/RTSPtoWebRTC/"
+    cfg="/tmp/webrtc-config.json"
+    wwwroot="${BASE_CN_PATH}/bin/webrtc-streamer/html"
+    # construct start parameter
+    start_param=( -H"${pt}" -o -s -N1 )
+    # webroot
+    start_param+=( -w "${wwwroot}" )
+    # config file
+    start_param+=( -C "${cfg}" )
     # Log start_param
-    log_msg "Starting RTSPtoWebRTC Server ..."
-    # Start rtsp2webrtc
-    cd "${rtc_bin}"
-    # Have to use this dirty bash hack to get output to logfile.
-    echo "-listen 0.0.0.0:${pt}" | xargs "./rtsp2webrtc" &> >(log_output "RTSPtoWebRTC")
+    log_msg "Starting webrtc-streamer ..."
+    echo "Parameters: ${start_param[*]}" | \
+    log_output "webrtc-streamer"
+    # Start ustreamer
+    echo "${start_param[*]}" | xargs "${rtc_bin}" 2>&1 | \
+    log_output "webrtc-streamer"
     # Should not be seen else failed.
-    log_msg "ERROR: Start of RTSPtoWebRTC server failed!"
+    log_msg "ERROR: Start of webrtc-streamer failed!"
 }
