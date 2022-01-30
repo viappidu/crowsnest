@@ -131,7 +131,6 @@ function uninstall_go {
         echo -e "No Version of Go Lang found ... [SKIPPED]"
         exit 1
     fi
-
     if  [ -d "/usr/local/go" ] && [ -f "${HOME}/.gorc" ]; then
         sudo rm -rf "$(whereis -b go | awk '{print $2}')"
         rm -f "${HOME}/.gorc"

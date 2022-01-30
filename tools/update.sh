@@ -205,9 +205,7 @@ function uninstall_go {
         echo -e "\nFound $(go version)\n"
     else
         echo -e "No Version of Go Lang found ... [SKIPPED]"
-        exit 1
     fi
-
     if  [ -d "/usr/local/go" ] && [ -f "${HOME}/.gorc" ]; then
         sudo rm -rf "$(whereis -b go | awk '{print $2}')"
         rm -f "${HOME}/.gorc"
@@ -218,12 +216,23 @@ function uninstall_go {
     fi
 }
 
+# remove obsolete RTSPtoWebRTC
+function uninstall_rtsp2webrtc {
+    echo -e "Removing RTSPtoWebRTC ..."
+    if [ -d "${HOME}/crowsnest/bin/RTSPtoWebRTC" ];then
+        sudo rm -rf "${HOME}/crowsnest/bin/RTSPtoWebRTC"
+        echo -e "Removing RTSPtoWebRTC ... [OK]"
+    else
+        echo -e "Removing RTSPtoWebRTC ... [SKIPPED]"
+        echo -e "RTSPtoWebRTC not installed ..."
+    fi
+}
+
 
 # Install funcs
-# Make sure submodules are initialized
+# Make sure ustreamer submodule is initialized
 function sub_init {
-    if [ ! -f "${HOME}/crowsnest/bin/ustreamer/Makefile" ] ||
-    [ ! -f "${HOME}/crowsnest/bin/RTSPtoWebRTC/main.go" ]; then
+    if [ ! -f "${HOME}/crowsnest/bin/ustreamer/Makefile" ]; then
         echo -e "Submodules are not initialized ..."
         git submodule update --init > /dev/null
         echo -e "Submodules are not initialized ... [OK]"
@@ -258,6 +267,7 @@ welcome_msg
 stop_webcamd
 uninstall_ustreamer
 uninstall_v4l2rtsp
+uninstall_rtsp2webrtc
 uninstall_go
 copy_service
 copy_logrotate
