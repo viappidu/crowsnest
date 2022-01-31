@@ -55,11 +55,13 @@ function run_webrtc_srv {
     cfg="/tmp/webrtc-config.json"
     wwwroot="${BASE_CN_PATH}/bin/webrtc-streamer/html"
     # construct start parameter
-    start_param=( -H"${pt}" -o -s -N1 )
+    start_param=( -H"${pt}" -o -s )
     # webroot
     start_param+=( -w "${wwwroot}" )
     # config file
     start_param+=( -C "${cfg}" )
+    # limit to rtsp urls
+    start_param+=( -q rtsp:// )
     # Log start_param
     log_msg "Starting webrtc-streamer ..."
     echo "Parameters: ${start_param[*]}" | \
