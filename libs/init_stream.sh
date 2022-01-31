@@ -24,43 +24,41 @@ function construct_streamer {
     log_msg "Try to start configured Cams / Services..."
     for cams in $(configured_cams); do
         mode="$(get_param "cam ${cams}" mode)"
+        check_section "${cams}"
         case ${mode} in
             mjpg)
-                check_section "${cams}"
-                run_ustreamer "${cams}" &
-                sleep 2 & sleep_pid="$!" ; wait "${sleep_pid}"
+                MJPG_INSTANCES+=( "${cams}" )
             ;;
             rtsp)
-                if [ -z "$(pidof rtsp-simple-server)" ]; then
-                    run_rtsp &
-                    sleep 2 & sleep_pid="$!"; wait "${sleep_pid}"
-                else
-                    echo "RTSP Server already running ... Skipped." | \
-                    log_output "INFO:"
-                fi
-                run_ffmpeg "${cams}" &
-                sleep 3 & sleep_pid="$!"; wait "${sleep_pid}"
+                RTSP_INSTANCES+=( "${cams}" )
             ;;
             webrtc)
-                if [ -z "$(pidof rtsp-simple-server)" ]; then
-                    run_rtsp &
-                    sleep 2 & sleep_pid="$!"; wait "${sleep_pid}"
-                else
-                    echo "RTSP Server already running ... Skipped." | \
-                    log_output "INFO:"
-                fi
-                run_ffmpeg "${cams}" &
-                sleep 3 & sleep_pid="$!"; wait "${sleep_pid}"
-                run_webrtc &
-                sleep 3 & sleep_pid="$!"; wait "${sleep_pid}"
+                RTSP_INSTANCES+=( "${cams}" )
+                RUN_WEBRTC=1
             ;;
             ?|*)
                 unknown_mode_msg
-                run_ustreamer "${cams}" &
-                sleep 2 & sleep_pid="$!" ; wait "${sleep_pid}"
+                MJPG_INSTANCES+=( "${cams}" )
+
             ;;
         esac
     done
-    log_msg "... Done!"
-    return
+    if [ "${#MJPG_INSTANCES[@]}" != "0" ]; then
+        run_mjpg "${MJPG_INSTANCES[*]}"
+    fi
+    if [ "${#RTSP_INSTANCES[@]}" != "0" ]; then
+        run_rtsp "${RTSP_INSTANCES[*]}"
+    fi
+    if [ "${RUN_WEBRTC}" == "1" ]; then
+        while true; do
+            if [ "$(pidof ffmpeg | wc -w)" != "${#RTSP_INSTANCES[@]}" ]; then
+                sleep 1
+            else
+                run_webrtc "${RTSP_INSTANCES[*]}"
+                break;
+            fi
+        done
+    fi
+    sleep 8 & sleep_pid="$!" ; wait "${sleep_pid}"
+    log_msg " ... Done!"
 }

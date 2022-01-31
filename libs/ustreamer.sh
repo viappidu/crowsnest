@@ -16,6 +16,14 @@
 # Exit upon Errors
 set -e
 
+function run_mjpg {
+    local cams
+    cams="${1}"
+    for instance in ${cams} ; do
+        run_ustreamer "${instance}" &
+    done
+}
+
 function run_ustreamer {
     local cam_sec ust_bin dev pt res fps cstm start_param
     cam_sec="${1}"

@@ -21,12 +21,9 @@ RTC_PORT="8085"
 
 function run_webrtc {
     local url head stream cfg cnf_cm
+    cams="${1}"
     url="rtsp://localhost:8554"
     cfg="/tmp/webrtc-config.json"
-    # convert configured_cams to real array
-    for cc in $(configured_cams); do
-        cnf_cm+=( "${cc}" )
-    done
     # Remove existing tmp file
     if [ -f "${cfg}" ]; then
         rm -f "${cfg}"
@@ -34,7 +31,7 @@ function run_webrtc {
     # Generate config.json
     head='{\n  "urls":{'
     echo -e "${head}" > "${cfg}"
-    for i in "${cnf_cm[@]}"; do
+    for i in ${cams}; do
         c=$((c +1))
         stream[0]="    \"${i}\":"
         stream[1]="{\"video\": \"${url}/${i}\""

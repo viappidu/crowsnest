@@ -16,6 +16,18 @@
 # Exit upon Errors
 set -e
 
+function run_rtsp {
+    local cams
+    cams="${1}"
+    if [ -z "$(pidof rtsp-simple-server)" ]; then
+        run_rtsp_srv &
+    fi
+    for instance in ${cams} ; do
+        run_ffmpeg "${instance}" &
+    done
+}
+
+
 function run_ffmpeg {
     local cam_section ffmpeg_bin start_param
     cam_section="${1}"
@@ -24,7 +36,7 @@ function run_ffmpeg {
     # Construct start_param
     start_param=( -nostdin -hide_banner -f video4linux2 )
     if [ "$(detect_h264 "${cam_section}")" = "1" ]; then
-        start_param+=( -input_format h264 )
+        start_param+=( -input_format h264 -pix_fmt h264 )
     else
         start_param+=( -input_format yuyv422 )
     fi
@@ -51,7 +63,7 @@ function run_ffmpeg {
     log_msg "ERROR: Start of ffmpeg (rtsp stream source) [cam ${cam_section}] failed!"
 }
 
-function run_rtsp {
+function run_rtsp_srv {
     local rtsp_bin config
     rtsp_bin="${BASE_CN_PATH}/bin/rtsp-simple-server/rtsp-simple-server"
     config="${BASE_CN_PATH}/file_templates/crowsnest-rtsp.yml"
