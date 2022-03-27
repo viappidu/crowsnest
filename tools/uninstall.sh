@@ -160,6 +160,12 @@ function remove_logrotate {
     echo -e "Removing Logrotate Rule ... [OK]"
 }
 
+function remove_logrotate {
+    echo -en "Removing Logrotate Rule ...\r"
+    sudo rm -f /etc/logrotate.d/webcamd
+    echo -e "Removing Logrotate Rule ... [OK]"
+}
+
 #### MAIN
 install_cleanup_trap
 welcome_msg

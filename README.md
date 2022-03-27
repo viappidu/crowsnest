@@ -202,6 +202,15 @@ You can choose:
 This let you use external viewer like vlc for example.
 _NOTE: There will be no preview in your Browser!_
 
+    mode: webrtc
+
+If you choose that mode you gain access to a newer technology called WebRTC.
+_NOTE: At this point there is no support via mainsail!_
+
+you can use, the inbuilt Website to watch your feed.
+
+    http://<yourprinterip>:8085
+
 ---
 
     port: 8080
@@ -227,7 +236,7 @@ So, you can easily copy it from there.
     resolution: 640x480
 
 Your desired FPS Settings has to match what your Camera able to deliver!
-_NOTE: For the most part ignored in rtsp mode!_
+_NOTE: For the most part ignored in rtsp or webrtc mode!_
 
     max_fps: 15
 
@@ -333,7 +342,10 @@ further Informations.
         More features are planned.
         [rtsp-simple-server](https://github.com/aler9/rtsp-simple-server) is written in Go by [aler9](https://github.com/aler9)
 
----
+-   RTSPtoWebRTC
+
+    -   webrtc-streamer's task should be pretty obvious.\
+        [webrtc-streamer](https://github.com/mpromonet/webrtc-streamer) mostly written in "C++" by [mpromonet](https://github.com/mpromonet)
 
 ## Credits
 

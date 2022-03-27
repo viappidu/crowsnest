@@ -15,7 +15,11 @@
 
 # Paths
 USTREAMER_PATH = ustreamer
-ARCH = $(shell uname -m)
+WEBRTC_PATH = webrtc-streamer
+WEBRTC_ARCH = $(shell uname -m | cut -c '-5' | sed 's/x86_6/x86_64/;s/aarch/arm64/')
+WEBRTC_VERSION = $(shell cat $(WEBRTC_PATH)/version)
+DL_WEBRTC = https://github.com/mpromonet/webrtc-streamer/releases/download/$(WEBRTC_VERSION)/
+WEBRTC_ARCHIVE = webrtc-streamer-$(WEBRTC_VERSION)-Linux-$(WEBRTC_ARCH)l-Release.tar.gz
 RTSP_PATH = rtsp-simple-server
 RTSP_ARCH = $(shell uname -m | cut -c '-5' | sed 's/x86_6/amd64/;s/aarch/arm64v8/')
 RTSP_VERSION = $(shell cat $(RTSP_PATH)/version)
@@ -31,6 +35,7 @@ OMX_SUPPORT = $(shell [ -d /opt/vc/include ] && echo 1 || echo 0)
 all:
 	$(MAKE) ustreamer
 	$(MAKE) rtsp
+	$(MAKE) webrtc
 
 # Build ustreamer
 ustreamer:
@@ -52,10 +57,26 @@ rtsp:
 # Dirty Hack needed to prevent "make: Nothing to be done for 'rtsp'." message
 	@echo > /dev/null
 
+webrtc:
+	$(info Download $(WEBRTC_ARCHIVE) from $(DL_WEBRTC))
+	$(shell curl -JLo $(WEBRTC_PATH)/$(WEBRTC_ARCHIVE) $(DL_WEBRTC)$(WEBRTC_ARCHIVE))
+	$(shell tar -C $(WEBRTC_PATH) -xf $(WEBRTC_PATH)/$(WEBRTC_ARCHIVE))
+	$(shell rm -f $(WEBRTC_PATH)/$(WEBRTC_ARCHIVE))
+	$(shell cp -r $(WEBRTC_PATH)/webrtc-streamer-$(WEBRTC_VERSION)-Linux-$(WEBRTC_ARCH)l-Release/* $(WEBRTC_PATH))
+	$(shell rm -rf $(WEBRTC_PATH)/webrtc-streamer-$(WEBRTC_VERSION)-Linux-$(WEBRTC_ARCH)l-Release)
+	$(info Finished.)
+# Dirty Hack needed to prevent "make: Nothing to be done for 'rtsp'." message
+	@echo > /dev/null
+
 clean:
 	$(MAKE) -C $(USTREAMER_PATH) clean
-	$(info Clean rtsp-simple-server ...)
+	$(info Clean rtsp-simple-server)
 	$(shell rm -rf $(RTSP_PATH)/rtsp*)
+	$(info Clean webrtc-streamer)
+	$(shell rm -f $(WEBRTC_PATH)/webrtc*)
+	$(shell rm -rf $(WEBRTC_PATH)/html/)
+	$(shell rm -f $(WEBRTC_PATH)/config.json)
+	$(shell rm -f $(WEBRTC_PATH)/Procfile)
 
 update:
 	$(MAKE) clean

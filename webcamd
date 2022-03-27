@@ -32,6 +32,7 @@ source "${BASE_CN_PATH}/libs/ustreamer.sh"
 source "${BASE_CN_PATH}/libs/v4l2_control.sh"
 source "${BASE_CN_PATH}/libs/versioncontrol.sh"
 source "${BASE_CN_PATH}/libs/watchdog.sh"
+source "${BASE_CN_PATH}/libs/webrtc.sh"
 
 #### MAIN
 ## Args given?

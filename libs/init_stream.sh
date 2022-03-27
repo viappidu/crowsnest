@@ -32,6 +32,10 @@ function construct_streamer {
             rtsp)
                 RTSP_INSTANCES+=( "${cams}" )
             ;;
+            webrtc)
+                RTSP_INSTANCES+=( "${cams}" )
+                RUN_WEBRTC=1
+            ;;
             ?|*)
                 unknown_mode_msg
                 MJPG_INSTANCES+=( "${cams}" )
@@ -44,6 +48,16 @@ function construct_streamer {
     fi
     if [ "${#RTSP_INSTANCES[@]}" != "0" ]; then
         run_rtsp "${RTSP_INSTANCES[*]}"
+    fi
+    if [ "${RUN_WEBRTC}" == "1" ]; then
+        while true; do
+            if [ "$(pidof ffmpeg | wc -w)" != "${#RTSP_INSTANCES[@]}" ]; then
+                sleep 1
+            else
+                run_webrtc "${RTSP_INSTANCES[*]}"
+                break;
+            fi
+        done
     fi
     sleep 2 & sleep_pid="$!" ; wait "${sleep_pid}"
     log_msg " ... Done!"

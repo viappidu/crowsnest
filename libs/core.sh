@@ -79,6 +79,7 @@ function check_apps {
     paths=(
         bin/ustreamer/ustreamer
         bin/rtsp-simple-server/rtsp-simple-server
+        bin/webrtc-streamer/webrtc-streamer
         )
     for chk in "${paths[@]}"; do
         if [ -x "${BASE_CN_PATH}/${chk}" ]; then
