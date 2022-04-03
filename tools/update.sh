@@ -292,6 +292,8 @@ function update_ustreamer {
     else
         echo -e "Checking ustreamer Version ${sm_version} ... [UPDATE]"
         echo -e "\t==> Version (${us_version}) mismatch, update needed."
+        # clean sources first
+        make -C bin/ustreamer clean
         pushd bin/ &> /dev/null || exit 1
         make ustreamer
         popd &> /dev/null || exit 1
