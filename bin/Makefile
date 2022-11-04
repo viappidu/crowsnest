@@ -11,7 +11,7 @@
 #### DO NOT MODIFY AT ALL! ####
 
 # Setup
-.PHONY: all clean ustreamer rtsp webrtc update
+.PHONY: all clean ustreamer update
 
 # Paths
 USTREAMER_PATH = ustreamer
