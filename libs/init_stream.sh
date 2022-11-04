@@ -29,9 +29,6 @@ function construct_streamer {
             mjpg | mjpeg)
                 MJPG_INSTANCES+=( "${cams}" )
             ;;
-            rtsp)
-                RTSP_INSTANCES+=( "${cams}" )
-            ;;
             ?|*)
                 unknown_mode_msg
                 MJPG_INSTANCES+=( "${cams}" )
