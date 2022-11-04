@@ -349,6 +349,7 @@ clone_cstreamer() {
     if [[ -d bin/camera-streamer ]]; then
         rm -rf bin/camera-streamer
     fi
+    sudo -u "${BSE_USER}" \
     git clone "${CROWSNEST_CAMERA_STREAMER_REPO_SHIP}" --recursive \
     -b "${CROWSNEST_CAMERA_STREAMER_BRANCH}" bin/camera-streamer
 }
