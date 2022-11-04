@@ -36,7 +36,6 @@ else
 	$(info INFO: ustreamer found.)
 endif
 	$(MAKE) ustreamer-bin
-	$(MAKE) rtsp
 
 # Build ustreamer
 ustreamer-bin:
