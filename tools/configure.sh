@@ -24,6 +24,8 @@ CN_CONFIG_ENVPATH="${CN_CONFIG_ROOTPATH}/systemd"
 CN_MOONRAKER_CONFIG_PATH="${CN_CONFIG_CONFIGPATH}/moonraker.conf"
 CN_USTREAMER_REPO="https://github.com/pikvm/ustreamer.git"
 CN_USTREAMER_BRANCH="master"
+CN_CAMERA_STREAMER_REPO="https://github.com/ayufan-research/camera-streamer.git"
+CN_CAMERA_STREAMER_BRANCH="master"
 
 ### Messages
 header_msg() {
@@ -152,6 +154,8 @@ create_config_header() {
     echo -e "BASE_USER=\"${CN_CONFIG_USER}\"";
     echo -e "CROWSNEST_USTREAMER_REPO_SHIP=\"${CN_USTREAMER_REPO}\"";
     echo -e "CROWSNEST_USTREAMER_REPO_BRANCH=\"${CN_USTREAMER_BRANCH}\""
+    echo -e "CROWSNEST_CAMERA_STREAMER_REPO_SHIP=\"${CN_CAMERA_STREAMER_REPO}\"";
+    echo -e "CROWSNEST_CAMERA_STREAMER_REPO_BRANCH=\"${CN_CAMERA_STREAMER_BRANCH}\""
     } >> "${CN_CONFIG_CONFIGFILE}"
 }
 

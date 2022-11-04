@@ -17,6 +17,8 @@
 USTREAMER_PATH = ustreamer
 USTREAMER_REPO = https://github.com/pikvm/ustreamer.git
 USTREAMER_OMX_BRANCH = 61ab2a8
+CSTREAMER_PATH = camera-streamer
+CSTREAMER_REPO = https://github.com/ayufan-research/camera-streamer.git
 ARCH = $(shell uname -m)
 
 # Custom Flags
@@ -28,6 +30,9 @@ OMX_SUPPORT = $(shell [ -d /opt/vc/include ] && echo 1 || echo 0)
 # Ustreamer cloned?
 USTREAMER_EXIST = $(shell [ -d ustreamer ] > /dev/null && echo 1 || echo 0)
 
+# Camera-Streamer cloned?
+CSTREAMER_EXIST = $(shell [ -d camera-streamer ] > /dev/null && echo 1 || echo 0)
+
 all:
 ifeq ($(USTREAMER_EXIST), 0)
 	$(info INFO: ustreamer not found, cloning repository.)
@@ -36,6 +41,14 @@ else
 	$(info INFO: ustreamer found.)
 endif
 	$(MAKE) ustreamer-bin
+
+ifeq ($(CSTREAMER_EXIST), 0)
+	$(info INFO: ustreamer not found, cloning repository.)
+	$(shell git clone $(CSTREAMER_REPO) --recursive camera-streamer)
+else
+	$(info INFO: camera-streamer found.)
+endif
+	$(MAKE) cstreamer-bin
 
 # Build ustreamer
 ustreamer-bin:
@@ -50,10 +63,12 @@ else
 	$(MAKE) -C $(USTREAMER_PATH)
 endif
 
+cstreamer-bin:
+	$(MAKE) -C $(CSTREAMER_PATH)
+
 clean:
 	$(MAKE) -C $(USTREAMER_PATH) clean
-	$(info Clean rtsp-simple-server ...)
-	$(shell rm -rf $(RTSP_PATH)/rtsp*)
+	$(MAKE) -C $(CSTREAMER_PATH) clean
 
 update:
 	$(MAKE) clean

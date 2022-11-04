@@ -198,8 +198,9 @@ install_packages() {
     PKGLIST="git crudini bsdutils findutils v4l-utils curl"
     ### Ustreamer Dependencies
     PKGLIST="${PKGLIST} build-essential libevent-dev libjpeg-dev libbsd-dev"
-    ### simple-rtsp-server Dependencies
-    PKGLIST="${PKGLIST} libxcomposite1 libxtst6 ffmpeg"
+    ### Camera-Streamer Dependencies
+    PKGLIST="${PKGLIST} libavformat-dev libavutil-dev libavcodec-dev libcamera-dev"
+    PKGLIST="${PKGLIST} liblivemedia-dev pkg-config xxd build-essential cmake libssl-dev"
 
     echo -e "Running apt update first ..."
     ### Run apt update
@@ -342,10 +343,21 @@ clone_ustreamer() {
     fi
 }
 
+clone_cstreamer() {
+    ## remove bin/ustreamer if exist
+    if [[ -d bin/camera-streamer ]]; then
+        rm -rf bin/camera-streamer
+    fi
+    git clone "${CROWSNEST_CAMERA_STREAMER_REPO_SHIP}" --recursive \
+    -b "${CROWSNEST_CAMERA_STREAMER_BRANCH}" bin/camera-streamer
+}
+
 build_apps() {
     echo -e "Build dependend Stream Apps ..."
     echo -e "Cloning ustreamer repository ..."
     clone_ustreamer
+    echo -e "Cloning camera-streamer repository ..."
+    clone_cstreamer
     pushd bin > /dev/null
     make all
     popd > /dev/null
