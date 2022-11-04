@@ -351,7 +351,7 @@ clone_cstreamer() {
     fi
     sudo -u "${BASE_USER}" \
     git clone "${CROWSNEST_CAMERA_STREAMER_REPO_SHIP}" --recursive \
-    -b "${CROWSNEST_CAMERA_STREAMER_BRANCH}" bin/camera-streamer
+    -b "${CROWSNEST_CAMERA_STREAMER_REPO_BRANCH}" bin/camera-streamer
 }
 
 build_apps() {
