@@ -54,8 +54,8 @@ run_ayucamstream() {
         (sed 's/#.*//' | cut -d'x' -f1) <<< "${res}"
     }
 
-    start_param+=( -camera-width="$(get_width_value)" )
-    start_param+=( -camera-height="$(get_height_value)" )
+    start_param+=( -camera-width="$(get_width_val)" )
+    start_param+=( -camera-height="$(get_height_val)" )
     # Set FPS
     start_param+=( -camera-fps="${fps}" )
     # Custom Flag Handling (append to defaults)
