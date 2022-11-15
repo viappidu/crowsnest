@@ -45,9 +45,6 @@ function construct_streamer {
     if [ "${#MJPG_INSTANCES[@]}" != "0" ]; then
         run_mjpg "${MJPG_INSTANCES[*]}"
     fi
-    if [ "${#RTSP_INSTANCES[@]}" != "0" ]; then
-        run_rtsp "${RTSP_INSTANCES[*]}"
-    fi
     sleep 2 & sleep_pid="$!" ; wait "${sleep_pid}"
     log_msg " ... Done!"
 }
