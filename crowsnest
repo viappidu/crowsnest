@@ -20,7 +20,7 @@ set -Ee
 BASE_CN_PATH="$(dirname "$(readlink -f "${0}")")"
 
 ## Import Librarys
-# shellcheck source-path=SCRIPTDIR/libs/
+# shellcheck source-path=SCRIPTDIR/../libs/
 . "${BASE_CN_PATH}/libs/camera-streamer.sh"
 . "${BASE_CN_PATH}/libs/configparser.sh"
 . "${BASE_CN_PATH}/libs/core.sh"
