@@ -70,7 +70,6 @@ versioncontrol() {
     main() {
         if [ "$(log_level)" != "quiet" ]; then
             get_ustreamer_version
-            get_rtsp_version
             get_ffmpeg_version
         fi
     }
