@@ -21,17 +21,22 @@ A webcam daemon for Raspberry Pi OS Lite images like mainsailOS
 
 So, this will be the 'lookout point' for your Printer.
 
-### Install on Raspberry Pi OS
+### Installation
 
     cd ~
     git clone https://github.com/mainsail-crew/crowsnest.git
     cd ~/crowsnest
     sudo make install
 
-_This is not tested on other Distributions. If you test that on other Distributions,\
-feel free to open a Pull Request to enhance Documentation._
+Tested on the following distributions:
 
-After successful Instalation you should consider to add
+-   Ubuntu Server 20.04
+-   Ubuntu Server 22.04 LTS (Raspberry Pi Variant)
+-   Linux Mint 21 (Codename: vanessa)
+
+_If you test that on other Distributions, feel free to open a Pull Request to enhance Documentation._
+
+After successful Installation you should consider to add
 
     [update_manager crowsnest]
     type: git_repo
@@ -41,7 +46,7 @@ After successful Instalation you should consider to add
 
 to your moonraker.conf, to get latest and possibly greatest Features.
 
-### To unsinstall 'crowsnest'
+### To uninstall 'crowsnest'
 
     cd ~/crowsnest
     make uninstall
