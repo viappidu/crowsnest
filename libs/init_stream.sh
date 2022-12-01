@@ -26,7 +26,7 @@ function construct_streamer {
         mode="$(get_param "cam ${cams}" mode)"
         check_section "${cams}"
         case ${mode} in
-            multi)
+            [mM]ulti)
                 MULTI_INSTANCES+=( "${cams}" )
             ;;
             mjpg | mjpeg)
