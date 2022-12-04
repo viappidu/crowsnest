@@ -66,7 +66,7 @@ endif
 cstreamer-bin:
 #	$(MAKE) -C $(CSTREAMER_PATH)
 
-	pushd bin/$(CSTREAMER_PATH)
+	pushd $(CSTREAMER_PATH)
 	echo "failes?"
 
 clean:
