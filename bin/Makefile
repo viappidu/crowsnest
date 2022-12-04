@@ -70,7 +70,7 @@ cstreamer-bin:
 	echo "failes?"
 
 clean:
-	$(MAKE) -C $(USTREAMER_PATH) clean
+#	$(MAKE) -C $(USTREAMER_PATH) clean
 	$(MAKE) -C $(CSTREAMER_PATH) clean
 
 update:
