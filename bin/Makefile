@@ -43,8 +43,8 @@ endif
 	$(MAKE) ustreamer-bin
 
 ifeq ($(CSTREAMER_EXIST), 0)
-	$(info INFO: ustreamer not found, cloning repository.)
-	$(shell git clone $(CSTREAMER_REPO) --recursive camera-streamer)
+	$(info INFO: camera-streamer not found, cloning repository.)
+	$(shell git clone --recursive $(CSTREAMER_REPO) camera-streamer)
 else
 	$(info INFO: camera-streamer found.)
 endif
