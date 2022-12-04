@@ -42,12 +42,7 @@ all:
 # endif
 # 	$(MAKE) ustreamer-bin
 
-ifeq ($(CSTREAMER_EXIST), 0)
-	$(info INFO: camera-streamer not found, cloning repository.)
-	$(shell git clone $(CSTREAMER_REPO) $(CSTREAMER_PATH) --recursive)
-else
-	$(info INFO: camera-streamer found.)
-endif
+
 #	$(MAKE) cstreamer-bin
 	$(MAKE) -C $(CSTREAMER_PATH)
 
@@ -66,7 +61,14 @@ endif
 
 # cstreamer-bin:
 # 	$(MAKE) -C $(CSTREAMER_PATH)
-
+ifeq ($(CSTREAMER_EXIST), 0)
+	$(info INFO: camera-streamer not found, cloning repository.)
+	$(shell git clone $(CSTREAMER_REPO) $(CSTREAMER_PATH) --recursive)
+else
+	$(info INFO: camera-streamer found.)
+	pushd $(CSTREAMER_PATH)
+	echo "Hello"
+endif
 
 clean:
 #	$(MAKE) -C $(USTREAMER_PATH) clean
