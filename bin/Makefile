@@ -43,8 +43,7 @@ all:
 # 	$(MAKE) ustreamer-bin
 
 
-#	$(MAKE) cstreamer-bin
-	$(MAKE) -C $(CSTREAMER_PATH)
+	$(MAKE) cstreamer-bin
 
 # Build ustreamer
 # ustreamer-bin:
@@ -59,7 +58,7 @@ all:
 # 	$(MAKE) -C $(USTREAMER_PATH)
 # endif
 
-# cstreamer-bin:
+cstreamer-bin:
 # 	$(MAKE) -C $(CSTREAMER_PATH)
 ifeq ($(CSTREAMER_EXIST), 0)
 	$(info INFO: camera-streamer not found, cloning repository.)
