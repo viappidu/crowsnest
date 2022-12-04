@@ -65,8 +65,7 @@ ifeq ($(CSTREAMER_EXIST), 0)
 	$(shell git clone $(CSTREAMER_REPO) $(CSTREAMER_PATH) --recursive)
 else
 	$(info INFO: camera-streamer found.)
-	pushd bin/$(CSTREAMER_PATH)/
-	echo "Hello"
+	$(MAKE) -C $(CSTREAMER_PATH)
 endif
 
 clean:
