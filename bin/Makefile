@@ -64,7 +64,9 @@ else
 endif
 
 cstreamer-bin:
-	$(MAKE) -C $(CSTREAMER_PATH)
+#	$(MAKE) -C $(CSTREAMER_PATH)
+
+	$(shell cd camera-streamer && make -j$(nproc))
 
 clean:
 	$(MAKE) -C $(USTREAMER_PATH) clean
