@@ -36,7 +36,7 @@ CSTREAMER_EXIST = $(shell [ -d camera-streamer ] > /dev/null && echo 1 || echo 0
 all:
 ifeq ($(USTREAMER_EXIST), 0)
 	$(info INFO: ustreamer not found, cloning repository.)
-	$(shell git clone $(USTREAMER_REPO) ustreamer)
+	$(shell git clone $(USTREAMER_REPO) $(USTREAMER_PATH))
 else
 	$(info INFO: ustreamer found.)
 endif
@@ -44,7 +44,7 @@ endif
 
 ifeq ($(CSTREAMER_EXIST), 0)
 	$(info INFO: camera-streamer not found, cloning repository.)
-	$(shell git clone --recursive $(CSTREAMER_REPO) camera-streamer)
+	$(shell git clone $(CSTREAMER_REPO) $(CSTREAMER_PATH) --recursive)
 else
 	$(info INFO: camera-streamer found.)
 endif
