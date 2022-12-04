@@ -59,7 +59,7 @@ endif
 cstreamer-bin:
 ifeq ($(CSTREAMER_EXIST), 0)
 	$(info INFO: camera-streamer not found, cloning repository.)
-	$(shell git clone $(CSTREAMER_REPO) --recursive)
+	@git clone $(CSTREAMER_REPO) --recursive
 else
 	$(info INFO: camera-streamer found.)
 endif
