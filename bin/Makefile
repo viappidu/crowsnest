@@ -48,7 +48,8 @@ ifeq ($(CSTREAMER_EXIST), 0)
 else
 	$(info INFO: camera-streamer found.)
 endif
-	$(MAKE) cstreamer-bin
+#	$(MAKE) cstreamer-bin
+	$(MAKE) -C $(CSTREAMER_PATH)
 
 # Build ustreamer
 # ustreamer-bin:
@@ -63,8 +64,8 @@ endif
 # 	$(MAKE) -C $(USTREAMER_PATH)
 # endif
 
-cstreamer-bin:
-	$(MAKE) -C $(CSTREAMER_PATH)
+# cstreamer-bin:
+# 	$(MAKE) -C $(CSTREAMER_PATH)
 
 
 clean:
