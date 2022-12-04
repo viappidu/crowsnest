@@ -62,8 +62,8 @@ ifeq ($(CSTREAMER_EXIST), 0)
 	$(shell git clone $(CSTREAMER_REPO) $(CSTREAMER_PATH) --recursive)
 else
 	$(info INFO: camera-streamer found.)
-	$(MAKE) -C $(CSTREAMER_PATH)
 endif
+	$(MAKE) -C $(CSTREAMER_PATH)
 
 clean:
 	$(MAKE) -C $(CSTREAMER_PATH) clean
