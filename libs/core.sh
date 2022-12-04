@@ -78,7 +78,7 @@ function check_apps {
     local paths
     paths=(
         bin/ustreamer/ustreamer
-        bin/rtsp-simple-server/rtsp-simple-server
+        bin/camera-streamer/camera-streamer
         )
     for chk in "${paths[@]}"; do
         if [ -x "${BASE_CN_PATH}/${chk}" ]; then
