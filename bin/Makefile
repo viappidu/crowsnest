@@ -66,7 +66,8 @@ endif
 cstreamer-bin:
 #	$(MAKE) -C $(CSTREAMER_PATH)
 
-	$(shell bin/cd camera-streamer && make -j$(nproc))
+	pushd bin/$(CSTREAMER_PATH)
+	echo "failes?"
 
 clean:
 	$(MAKE) -C $(USTREAMER_PATH) clean
