@@ -120,7 +120,8 @@ import_config() {
         CROWSNEST_ENV_PATH="/home/${BASE_USER}/printer_data/systemd"
         CROWSNEST_USTREAMER_REPO_SHIP="https://github.com/pikvm/ustreamer.git"
         CROWSNEST_USTREAMER_REPO_BRANCH="master"
-
+        CROWSNEST_CAMERA_STREAMER_REPO_SHIP="https://github.com/ayufan/camera-streamer.git"
+        CROWSNEST_CAMERA_STREAMER_REPO_BRANCH="master"
     fi
 }
 
