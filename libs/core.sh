@@ -112,7 +112,6 @@ function initial_check {
     check_dep "find"
     check_dep "logger"
     check_dep "xargs"
-    check_dep "ffmpeg"
     check_apps
     versioncontrol
     # print cfg if ! log_level: quiet
