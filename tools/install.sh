@@ -218,7 +218,7 @@ install_packages() {
     # disable because we want 'wordsplitting'
     sudo apt-get install -q -y --no-install-recommends ${PKGLIST}
 
-    if [[ "$(get_os_version buster)" != "0" ]]; then
+    if [[ "$(get_os_version buster)" != "0" ]] && [[ "$(is_raspberry_pi)" = "1" ]]; then
         sudo apt-get install -q -y --no-install-recommends libraspberrypi-dev
     fi
     echo -e "Installing 'crowsnest' Dependencies ... [${CN_OK}]"
@@ -428,6 +428,10 @@ enable_legacy_cam() {
         fi
         echo -e "Enable legacy camera stack ... [${CN_OK}]"
     fi
+    ## crudini workaround
+    ## used version of crudini puts spaces between values and parameters
+    ## This causes unwanted side effects
+    sed -i 's/[[:alnum:]][[:blank:]]=[[:blank:]][[:alnum:]]/=/g' "${cfg}"
 }
 
 ## Ubuntu on RPI Workaround
@@ -461,6 +465,10 @@ enable_buntu_cam() {
         fi
         echo -e "Enable legacy camera stack ... [${CN_OK}]"
     fi
+    ## crudini workaround
+    ## used version of crudini puts spaces between values and parameters
+    ## This causes unwanted side effects
+    sed -i 's/[[:alnum:]][[:blank:]]=[[:blank:]][[:alnum:]]/=/g' "${cfg}"
 }
 
 ## enable service

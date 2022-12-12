@@ -21,6 +21,22 @@ A webcam daemon for Raspberry Pi OS Lite images like mainsailOS
 
 So, this will be the 'lookout point' for your Printer.
 
+## Foreword
+
+Thank you for choosing crowsnest as your stream service.
+
+**Please read carefully on [how to configre](#simple-configuration) crowsnest to your needs!**
+
+If you have any trouble that isnt corelated to my bad code :wink:
+see [FAQ](#faq) section for first aid.\
+Please join our [Discord](https://discord.gg/mainsail) server if you need further help.
+
+Do not open issues that are based on misconfiguration!\
+This makes it harder for me to keep track of issues in my code.
+
+Thanks in advance
+Regards KwadFan
+
 ### Installation
 
     cd ~
@@ -95,7 +111,7 @@ What that basicly means is:
 
     log_path: ~/printer_data/logs/crowsnest.log
 
-Where crowsnest (webcamd) should store its Logfile.
+**_NOTE: Do not change after Installation! This will prevent logrotate properly handling the log file rotation!_**
 
 You can choose:
 
@@ -175,8 +191,8 @@ Now the more interessting part.
     resolution: 640x480
     max_fps: 15
 
-> _Note: You can name the cam, how you want!_\
-> _ex.: [cam raspicam]_
+_**Note:** You can name the cam, how you want! ex.: [cam raspicam]_
+**Attention: Do not skip the keyword 'cam'**
 
 ---
 
@@ -208,12 +224,15 @@ According to that 8080 will be /webcam, port 8081 will be /webcam2 and so on._**
 
     device: /dev/video0
 
-The Videodevice (Camera) what should be used by choosen Streamservice.
+This setting defines what video device will be used by the selected service.
+
+If you are not using a Raspberry Pi then `/dev/video0` might not work and you might encounter an "`Video capture not supported by the device`" error in the `crowsnest.log` log file.
+
+In this case you should use the direct device ID for the USB camera found in the `/dev/4vl/by-id` directory, like in the following example:
 
     device: /dev/v4l/by-id/usb-PixArt_Imaging_Inc._USB2.0_Camera-video-index0
 
-is also valid. Your devices are listed in your log-file on every run.\
-So, you can easily copy it from there.
+Please be aware that all available devices are always listed in the `crowsnest.log` log file, so you can always copy the appropriate device ID from there.
 
 ---
 
@@ -304,6 +323,86 @@ You have to "play around" with those settings if it matches your needs.
 simply repeat the commands as mentioned earlier in your ssh connection.
 
 If you have discoverd your setup write that to your webcam.conf as described.
+
+---
+
+## FAQ
+
+---
+
+**Q:** I get / keep getting Error 127 in line 31. What can I do?
+
+**A:** Simple fix. For what ever Reason ustreamer wont start. Run the following commands please.
+
+    sudo systemctl stop crowsnest.service
+    cd ~/crowsnest
+    make buildclean
+    make build
+    sudo systemctl start crowsnest.service
+
+Did it work? If your answer is yes... Was easy right? :wink:
+
+If it doesn't work for you, you probably updated a Debian "Buster" to latest "Bullseye" right?
+
+Here is the catch, Buster uses a proprietary Firmware for the GPU called OpenMaxIL. This isn't included any more in "Bullseye".
+These File are located in `/opt/vc`.\
+Please backup these files and delete this folder by
+
+    sudo rm -rf /opt/vc
+
+Now run the commands mentioned in the beginning.
+
+---
+
+**Q:** I set `mode` to `rtsp`, but I get no stream in VLC. What should I do?
+**A:** Read your log. If you are not using a raspicam or a camera with an inbuilt "H264" encoder, chances are equal to zero, to get a rtsp stream. Sorry :man_shrugging:
+
+---
+
+**Q:** I have twice the same model of a USB Cam, cant get both to show up. What can I do?\
+**A:** Easy fix: Run
+
+    ls -l /dev/v4l/by-path
+
+Grab the two equal named devices, ending with `index0`
+
+Use that paths as device path in your crowsnest.conf!
+
+---
+
+**Q:** How to install/use a Raspicam (V1/V2 are tested, HQ Variant untested)?
+
+**A:** Well...
+If your device is a Raspberry Pi, one of the mentioned Cameras **and** your OS is a Raspberry Pi OS based one, simply do nothing!
+I tried as much as I can to reduce the steps to get that done.
+Use `/dev/video0` as device in your _crowsnest.conf_
+That is the device path I try to force for Raspicams.
+
+---
+
+**Q:** I use a Raspicam and a USB one but I cant get them both for unknown reason. How do I fix that?
+
+**A:** My "force action" for Raspicams has a downside. If your USB Cam was attached before you extended a raspicam, the path `/dev/video0` is blocked by that USB Cam.
+
+To fix that please unplug the USB one and reboot.
+Plug the USB Cam in, after the stream of the raspicam is shown.
+After that use the `/dev/v4l/by-id/<whateveryourdeviceidis>-index0` for the USB one and restart crowsnest.
+
+---
+
+**Q:** How do I contribute the best way?\
+**A:** Well..-
+
+1. Create an Issue related to your topic.
+2. Prepare an _tested_ Pull Request against the develop branch
+    - Please use commits formatted according to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+    - Make sure not to ignore code formating as provided via .editorconfig of this repo
+3. Be patient. Every PR has to pass some sort of "internal gates" before it will hit the master branch, unless an immediate reaction is crutial.
+
+---
+
+**Q:** But Kwad I want to support you in person, because \<fillinyourreason>! How?\
+**A:** Buy me a coffee at [ko-fi.com](https://ko-fi.com/U7U2GK66P)
 
 ---
 
