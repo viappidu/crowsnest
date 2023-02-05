@@ -406,7 +406,7 @@ install_raspicam_fix() {
     fi
 }
 
-enable_legacy_cam() {
+set_gpu_mem() {
     local cfg
     local -a model
     cfg="/boot/config.txt"
@@ -549,7 +549,7 @@ main() {
     ## Step 7: Enable Legacy Camera Stack
     if [[ "$(get_os_version bullseye)" != "0" ]] &&
     [[ -f "/boot/config.txt" ]]; then
-        enable_legacy_cam
+        set_gpu_mem
     fi
 
     ### buntu workaround
