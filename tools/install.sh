@@ -410,7 +410,7 @@ enable_legacy_cam() {
     local cfg
     local -a model
     cfg="/boot/config.txt"
-    model=(pi3 pi4)
+    model=(pi3 pi4 cm4)
     if [[ -f "${cfg}" ]] && [[ "$(is_raspberry_pi)" = "1" ]]; then
 
         # Helper func
