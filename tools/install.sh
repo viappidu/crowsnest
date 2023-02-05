@@ -11,6 +11,9 @@
 
 # shellcheck enable=require-variable-braces
 
+### Disable SC2317 due Trap usage
+# shellcheck disable=SC2317
+
 # Exit on errors
 set -Ee
 
@@ -392,7 +395,10 @@ install_raspicam_fix() {
             CROWSNEST_RASPICAMFIX="0"
         fi
     fi
-    if [[ "${CROWSNEST_RASPICAMFIX}" == "1" ]]; then
+    # This is also used for unattended Install
+    # Needs special handling if targeted Image is not for Raspberry Pi's!
+    if [[ "${CROWSNEST_RASPICAMFIX}" == "1" ]] &&
+    [[ -f /boot/config.txt ]]; then
         echo -en "Applying Raspicam Fix ... \r"
         bash -c 'echo "bcm2835-v4l2" >> /etc/modules'
         cp resources/bcm2835-v4l2.conf /etc/modprobe.d/
@@ -431,7 +437,7 @@ enable_legacy_cam() {
     ## crudini workaround
     ## used version of crudini puts spaces between values and parameters
     ## This causes unwanted side effects
-    sed -i 's/[[:alnum:]][[:blank:]]=[[:blank:]][[:alnum:]]/=/g' "${cfg}"
+    sed -i 's/[[:blank:]]=[[:blank:]]/=/g' "${cfg}"
 }
 
 ## Ubuntu on RPI Workaround
@@ -468,7 +474,7 @@ enable_buntu_cam() {
     ## crudini workaround
     ## used version of crudini puts spaces between values and parameters
     ## This causes unwanted side effects
-    sed -i 's/[[:alnum:]][[:blank:]]=[[:blank:]][[:alnum:]]/=/g' "${cfg}"
+    sed -i 's/[[:blank:]]=[[:blank:]]/=/g' "${cfg}"
 }
 
 ## enable service
