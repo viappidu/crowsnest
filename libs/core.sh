@@ -90,18 +90,6 @@ function check_apps {
     done
 }
 
-# checks availability of OpenMax IL feature on host and in apps.
-# 0 = false / 1 = true
-function check_omx {
-    if [ -d "/opt/vc/include" ] &&
-    [ ! "$(ffmpeg -hide_banner -buildconf | grep -c 'omx')" = "0" ] &&
-    [ "$("${BASE_CN_PATH}"/bin/ustreamer/ustreamer --features | grep -c '\+ WITH_OMX')" = "1" ]; then
-        echo "1"
-    else
-        echo "0"
-    fi
-}
-
 # Check all needed Dependencies
 # If pass print your set configfile to log.
 # print_cfg, see libs/logging.sh L#75

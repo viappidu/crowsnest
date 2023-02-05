@@ -48,15 +48,6 @@ function unknown_mode_msg {
     log_msg "WARN: Using 'mode: mjpg' as fallback!"
 }
 
-function provides_omx_msg {
-    if [ "$(check_omx)" -eq 1 ]; then
-        log_msg "INFO: System provides OpenMAX IL features."
-    else
-        log_msg "WARN: System does not provide OpenMAX IL features."
-    fi
-}
-
-
 ## v4l2_control lib
 function detected_broken_dev_msg {
     log_msg "WARN: Detected 'brokenfocus' device."
