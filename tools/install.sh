@@ -384,28 +384,6 @@ is_raspberry_pi() {
     fi
 }
 
-install_raspicam_fix() {
-    if [[ "${CROWSNEST_RASPICAMFIX}" == "auto" ]]; then
-        if [[ "$(is_raspberry_pi)" = "1" ]]; then
-            echo -e "Device is a Raspberry Pi"
-            CROWSNEST_RASPICAMFIX="1"
-        fi
-        if [[ "$(is_raspberry_pi)" = "0" ]]; then
-            echo -e "Device is \e[31mNOT\e[0m a Raspberry Pi ... [${CN_SK}]"
-            CROWSNEST_RASPICAMFIX="0"
-        fi
-    fi
-    # This is also used for unattended Install
-    # Needs special handling if targeted Image is not for Raspberry Pi's!
-    if [[ "${CROWSNEST_RASPICAMFIX}" == "1" ]] &&
-    [[ -f /boot/config.txt ]]; then
-        echo -en "Applying Raspicam Fix ... \r"
-        bash -c 'echo "bcm2835-v4l2" >> /etc/modules'
-        cp resources/bcm2835-v4l2.conf /etc/modprobe.d/
-        echo -e "Applying Raspicam Fix ... [${CN_OK}]"
-    fi
-}
-
 set_gpu_mem() {
     local cfg
     local -a model
@@ -575,16 +553,13 @@ main() {
     ## Step 10: Install logrotate file
     install_logrotate
 
-    ## Step 11: Install raspicamfix
-    install_raspicam_fix
-
-    ## Step 12: Add moonraker update_manager entry
+    ## Step 11: Add moonraker update_manager entry
     if [[ "${CROWSNEST_UNATTENDED}" = "1" ]] ||
     [[ "${CROWSNEST_ADD_CROWSNEST_MOONRAKER}" = "1" ]]; then
         add_update_entry
     fi
 
-    ## Step 13: Ask for reboot
+    ## Step 12: Ask for reboot
     ## Skip if UNATTENDED
     goodbye_msg
     if [[ "${CROWSNEST_UNATTENDED}" = "0" ]]; then

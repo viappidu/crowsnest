@@ -208,29 +208,6 @@ specify_env_path() {
     fi
 }
 
-apply_raspicamfix() {
-    local reply
-    apply_raspicamfix_msg
-    read -erp "Enable Raspicamfix?: " reply
-    if [[ -z "${reply}" ]]; then
-        echo -e "CROWSNEST_RASPICAMFIX=\"auto\"" >> \
-        "${CN_CONFIG_CONFIGFILE}"
-        return 0
-    fi
-    while true; do
-        case "${reply}" in
-            [yY]*)
-                echo -e "CROWSNEST_RASPICAMFIX=\"1\"" >> "${CN_CONFIG_CONFIGFILE}"
-                break
-            ;;
-            [nN]*)
-                echo -e "CROWSNEST_RASPICAMFIX=\"0\"" >> "${CN_CONFIG_CONFIGFILE}"
-                break
-            ;;
-        esac
-    done
-}
-
 add_moonraker_entry() {
     local reply
     add_moonraker_entry_msg
@@ -269,11 +246,9 @@ main() {
     specify_log_path
     # Step 6: Specify env path.
     specify_env_path
-    # Step 7: Raspicam fix
-    apply_raspicamfix
-    # Step 8: Moonraker entry
+    # Step 7: Moonraker entry
     add_moonraker_entry
-    # Step 9: Display finished message
+    # Step 8: Display finished message
     goodbye_msg
 }
 
