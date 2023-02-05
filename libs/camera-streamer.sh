@@ -25,13 +25,15 @@ run_multi() {
 }
 
 run_ayucamstream() {
-    local cam_sec ust_bin dev pt res fps cstm start_param
+    local cam_sec ust_bin dev pt res rtsp rtsp_pt fps cstm start_param
     cam_sec="${1}"
     ust_bin="${BASE_CN_PATH}/bin/camera-streamer/camera-streamer"
     dev="$(get_param "cam ${cam_sec}" device)"
     pt=$(get_param "cam ${cam_sec}" port)
     res=$(get_param "cam ${cam_sec}" resolution)
     fps=$(get_param "cam ${cam_sec}" max_fps)
+    rtsp=$(get_param "cam ${cam_sec}" enable_rtsp)
+    rtsp_pt=$(get_param "cam ${cam_sec}" rtsp_port)
     cstm="$(get_param "cam ${cam_sec}" custom_flags 2> /dev/null)"
     ## construct start parameter
     # set http port
@@ -56,8 +58,16 @@ run_ayucamstream() {
 
     start_param+=( -camera-width="$(get_width_val)" )
     start_param+=( -camera-height="$(get_height_val)" )
+
     # Set FPS
     start_param+=( -camera-fps="${fps}" )
+
+    # Enable rtsp, if set true
+    if [[ "${rtsp}" == "true" ]]; then
+        # ensure a port is set
+        start_param+=( -rtsp-port="${rtsp_pt:-8554}" )
+    fi
+
     # Custom Flag Handling (append to defaults)
     if [[ -n "${cstm}" ]]; then
         start_param+=( "${cstm}" )
