@@ -77,16 +77,6 @@ env_path_msg() {
     echo -e "\tDefault: \e[32m${CN_CONFIG_ENVPATH}\e[0m\n"
 }
 
-apply_raspicamfix_msg() {
-    header_msg
-    echo -e "Should the Raspicam Fix be applied?\n"
-    echo -e "\t\e[34mNOTE:\e[0m\n\tThis should be only applied if you are"
-    echo -e "\tusing a Raspberry Pi! This will force Raspicams"
-    echo -e "\tusing the device path '/dev/video0'\n"
-    echo -e "Available are:\n Yes [y or Y]\n No [n or N]\n Hit ENTER for auto\n"
-    echo -e "In 'auto' mode Installer try to detect device and applies fix if SBC is a Pi!\n"
-}
-
 add_moonraker_entry_msg() {
     header_msg
     echo -e "Should the update_manager entry added to your moonraker.conf?\n"
