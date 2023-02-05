@@ -418,8 +418,7 @@ enable_legacy_cam() {
             crudini --get "${cfg}" "${1}" gpu_mem 2> /dev/null
         }
 
-        echo -en "Enable legacy camera stack ... \r"
-        sed -i "s/camera_auto_detect=1/#camera_auto_detect=1/" "${cfg}"
+        echo -en "Set gpu_mem ... \r"
         if [[ "$(grep -c "start_x" "${cfg}")" = "0" ]]; then
             crudini --set --inplace "${cfg}" all start_x 1 &> /dev/null
         fi
@@ -432,7 +431,7 @@ enable_legacy_cam() {
         if [[ "$(get_val pi0)" -lt "129" ]]; then
                 sudo crudini --set --inplace "${cfg}" pi0 gpu_mem 160 &> /dev/null
         fi
-        echo -e "Enable legacy camera stack ... [${CN_OK}]"
+        echo -e "Set gpu_mem ... [${CN_OK}]"
     fi
     ## crudini workaround
     ## used version of crudini puts spaces between values and parameters
