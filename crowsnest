@@ -64,9 +64,9 @@ done
 
 init_logging
 initial_check
-v4l2_control
 blockyfix
 construct_streamer
+v4l2_control
 brokenfocus
 
 ## Loop and Watchdog
