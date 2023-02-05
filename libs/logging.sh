@@ -112,9 +112,6 @@ function print_cams {
     if [ -d "/dev/v4l/by-id/" ]; then
         detect_avail_cams
     fi
-    if [ -d "/dev/v4l/by-path" ]; then
-        detect_avail_csi
-    fi
 }
 
 function print_host {

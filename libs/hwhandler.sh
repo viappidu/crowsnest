@@ -37,22 +37,6 @@ function detect_avail_cams {
     fi
 }
 
-function detect_avail_csi {
-    local avail count realpath
-    avail="$(find /dev/v4l/by-path/ -iname "*csi*index0" 2> /dev/null)"
-    count="$(echo "${avail}" | wc -l)"
-    if [ -d "/dev/v4l/by-path/" ] &&
-    [ -n "${avail}" ]; then
-        log_msg "INFO: Found ${count} available csi device(s)"
-        echo "${avail}" | while read -r csi; do
-            realpath=$(readlink -e "${csi}")
-            log_msg "${csi} -> ${realpath}"
-        done
-    else
-        log_msg "INFO: No usable CSI Devices found."
-    fi
-}
-
 # Used for "verbose" and "debug" logging in logging.sh
 function list_cam_formats {
     local device formats
