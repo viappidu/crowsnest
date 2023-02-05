@@ -58,21 +58,25 @@ function list_cam_v4l2ctrls {
     done
 }
 
-# Determine connected "raspicam" device
-function detect_raspicam {
+
+# libcamera-hello --list-cameras | sed '1,2d' | grep "\(/base/*\)" | cut -d"(" -f2 | tr -d '$)'
+
+# Determine connected libcamera (CSI) device
+function detect_libcamera {
     local avail
-    if [ -f /proc/device-tree/model ] &&
+    if [[ -f /proc/device-tree/model ]] &&
     grep -q "Raspberry" /proc/device-tree/model; then
-        avail="$(vcgencmd get_camera | awk -F '=' '{ print $3 }' | cut -d',' -f1)"
-    else
-        avail="0"
+        vcgencmd get_camera | grep -c "libcamera interfaces=1" || true
     fi
-    echo "${avail}"
 }
 
-function dev_is_raspicam {
-    v4l2-ctl --list-devices |  grep -A1 -e 'mmal' | \
-    awk 'NR==2 {print $1}'
+# Spit /base/soc path for libcamera device
+function get_libcamera_path {
+    if [[ -f /proc/device-tree/model ]] &&
+    [[ -x "$(command -v libcamera-hello)" ]]; then
+        libcamera-hello --list-cameras | sed '1,2d' \
+        | grep "\(/base/*\)" | cut -d"(" -f2 | tr -d '$)'
+    fi
 }
 
 # Determine if cam has H.264 Hardware encoder
