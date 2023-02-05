@@ -16,16 +16,12 @@
 # Paths
 USTREAMER_PATH = ustreamer
 USTREAMER_REPO = https://github.com/pikvm/ustreamer.git
-USTREAMER_OMX_BRANCH = 61ab2a8
 CSTREAMER_PATH = camera-streamer
 CSTREAMER_REPO = https://github.com/ayufan-research/camera-streamer.git
 ARCH = $(shell uname -m)
 
 # Custom Flags
 MAKEFLAGS += -j$(shell nproc)
-
-# OpenMAX IL Support
-OMX_SUPPORT = $(shell [ -d /opt/vc/include ] && echo 1 || echo 0)
 
 # Ustreamer cloned?
 USTREAMER_EXIST = $(shell [ -d ustreamer ] > /dev/null && echo 1 || echo 0)
@@ -45,16 +41,8 @@ ifeq ($(USTREAMER_EXIST), 0)
 else
 	$(info INFO: ustreamer found.)
 endif
-ifeq ($(OMX_SUPPORT), 1)
-	$(info Compiling ustreamer with OMX Support.)
-	$(info Changening to commit '$(USTREAMER_OMX_BRANCH)' )
-	$(shell cd ustreamer; git reset -q --hard $(USTREAMER_OMX_BRANCH) \
-	; cd ..)
-	WITH_OMX=1 $(MAKE) -C $(USTREAMER_PATH)
-else
-	$(info Compiling ustreamer without OMX Support.)
+	$(info INFO: Compiling ustreamer)
 	$(MAKE) -C $(USTREAMER_PATH)
-endif
 
 cstreamer-bin:
 ifeq ($(CSTREAMER_EXIST), 0)
@@ -63,6 +51,7 @@ ifeq ($(CSTREAMER_EXIST), 0)
 else
 	$(info INFO: camera-streamer found.)
 endif
+	$(info INFO: Compiling camera-streamer)
 	$(MAKE) -C $(CSTREAMER_PATH)
 
 clean:
