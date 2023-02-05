@@ -63,7 +63,7 @@ run_ayucamstream() {
     start_param+=( -camera-fps="${fps}" )
 
     # Enable rtsp, if set true
-    if [[ "${rtsp}" == "true" ]]; then
+    if [[ -n "${rtsp}" ]] && [[ "${rtsp}" == "true" ]]; then
         # ensure a port is set
         start_param+=( -rtsp-port="${rtsp_pt:-8554}" )
     fi
