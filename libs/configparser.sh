@@ -26,6 +26,7 @@ function get_param {
     param="${2}"
     crudini --get "${cfg}" "${section}" "${param}" 2> /dev/null | \
     sed 's/\#.*//;s/[[:space:]]*$//'
+    return
 }
 
 # Check for existing file
