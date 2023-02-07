@@ -35,6 +35,8 @@ function check_cfg {
     if [ ! -r "${1}" ]; then
         log_msg "ERROR: No Configuration File found. Exiting!"
         exit 1
+    else
+        return 0
     fi
 }
 
@@ -47,6 +49,7 @@ function configured_cams {
         cams+=("${i}")
     done
     echo "${cams[@]}"
+    return
 }
 
 # Checks [cam <nameornumber>] if all needed configuration sections are present
@@ -79,4 +82,5 @@ function check_section {
             Continue..."
         fi
     done
+    return
 }
