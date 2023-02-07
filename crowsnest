@@ -29,7 +29,7 @@ BASE_CN_PATH="$(dirname "$(readlink -f "${0}")")"
 . "${BASE_CN_PATH}/libs/logging.sh"
 . "${BASE_CN_PATH}/libs/messages.sh"
 . "${BASE_CN_PATH}/libs/ustreamer.sh"
-#. "${BASE_CN_PATH}/libs/v4l2_control.sh"
+. "${BASE_CN_PATH}/libs/v4l2_control.sh"
 . "${BASE_CN_PATH}/libs/versioncontrol.sh"
 . "${BASE_CN_PATH}/libs/watchdog.sh"
 

@@ -18,10 +18,14 @@ set -Ee
 
 run_mjpg() {
     local cams
+    v4l2_control
+    blockyfix
     cams="${1}"
     for instance in ${cams} ; do
         run_ustreamer "${instance}" &
     done
+    brokenfocus
+    return
 }
 
 run_ustreamer() {
