@@ -112,4 +112,5 @@ function initial_check {
     logger -t crowsnest -f "${CROWSNEST_CFG}"
     log_msg "INFO: Detect available Devices"
     print_cams
+    return
 }
