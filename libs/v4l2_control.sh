@@ -38,7 +38,7 @@ function v4l2_control {
                 # Split options to array
                 IFS=',' read -ra opt < <(echo "${v4l2ctl}" | tr -d " " | sed 's/\,/ /'); unset IFS
                 # loop through options
-                debug_msg "${opt[@]}"
+                debug_msg "${opt[*]}"
                 for param in "${opt[@]}"; do
                     debug_msg "${param}"
                     # parameter available for device
