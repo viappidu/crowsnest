@@ -16,7 +16,7 @@
 # Exit upon Errors
 set -Ee
 
-run_multi() {
+function run_multi() {
     local cams
     cams="${1}"
     for instance in ${cams} ; do
@@ -24,8 +24,9 @@ run_multi() {
     done
 }
 
-run_ayucamstream() {
+function run_ayucamstream() {
     local cam_sec ust_bin dev pt res rtsp rtsp_pt fps cstm start_param
+    local v4l2ctl
     cam_sec="${1}"
     ust_bin="${BASE_CN_PATH}/bin/camera-streamer/camera-streamer"
     dev="$(get_param "cam ${cam_sec}" device)"
@@ -72,6 +73,20 @@ run_ayucamstream() {
     if [[ -n "${cstm}" ]]; then
         start_param+=( "${cstm}" )
     fi
+
+    # v4l2 option handling
+    v4l2ctl="$(get_param "cam ${cam_sec}" v4l2ctl)"
+    if [ -n "${v4l2ctl}" ]; then
+        IFS="," read -ra opt < <(echo "${v4l2ctl}" | tr -d " "); unset IFS
+        log_msg "V4L2 Control: Handling done by camera-streamer ..."
+        log_msg "V4L2 Control: Trying to set: ${v4l2ctl}"
+        # loop through options
+        for param in "${opt[@]}"; do
+            start_param+=( -camera-options="${param}" )
+        done
+    fi
+
+
     # Log start_param
     log_msg "Starting camera-streamer with Device ${dev} ..."
     echo "Parameters: ${start_param[*]}" | \
