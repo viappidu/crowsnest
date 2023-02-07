@@ -36,7 +36,7 @@ function v4l2_control {
                 v4c_log_msg "Device: [cam ${cam}]"
                 v4c_log_msg "Options: ${v4l2ctl}"
                 # Split options to array
-                IFS=',' read -ra opt < <(echo "${v4l2ctl}" | tr -d " "); unset IFS
+                IFS=',' read -ra opt < <(echo "${v4l2ctl}" | tr -d " " | sed 's/\,/ /'); unset IFS
                 # loop through options
                 debug_msg "${opt[@]}"
                 for param in "${opt[@]}"; do
