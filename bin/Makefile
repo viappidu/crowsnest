@@ -55,12 +55,12 @@ endif
 	$(MAKE) -C $(CSTREAMER_PATH)
 
 clean:
-	ifeq ($(CSTREAMER_EXIST), 1)
-		$(MAKE) -C $(CSTREAMER_PATH) clean
-	endif
-	ifeq ($(USTREAMER_EXIST), 1)
-		$(MAKE) -C $(USTREAMER_PATH) clean
-	endif
+ifeq ($(CSTREAMER_EXIST), 1)
+	$(MAKE) -C $(CSTREAMER_PATH) clean
+endif
+ifeq ($(USTREAMER_EXIST), 1)
+	$(MAKE) -C $(USTREAMER_PATH) clean
+endif
 
 update:
 	$(MAKE) clean
