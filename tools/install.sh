@@ -209,7 +209,7 @@ install_packages() {
     ### Ustreamer Dependencies
     PKGLIST="${PKGLIST} build-essential libevent-dev libjpeg-dev libbsd-dev"
     ### Camera-Streamer Dependencies
-    PKGLIST="${PKGLIST} libavformat-dev libavutil-dev libavcodec-dev libcamera-dev"
+    PKGLIST="${PKGLIST} cmake libavformat-dev libavutil-dev libavcodec-dev libcamera-dev"
     PKGLIST="${PKGLIST} liblivemedia-dev pkg-config xxd build-essential cmake libssl-dev"
 
     echo -e "Running apt update first ..."
