@@ -29,10 +29,10 @@ versioncontrol() {
         pushd "${BASE_CN_PATH}"/bin/ustreamer || exit 1
             avail_ver="$(git describe --tags --always)"
             cur_ver="v$("${PWD}"/ustreamer -v)"
-            if [ "${cur_ver}" == "${avail_ver}" ]; then
+            if [[ "${cur_ver}" == "${avail_ver}" ]]; then
                 vc_log_msg "ustreamer is up to date. (${cur_ver})"
             fi
-            if [ "${cur_ver}" != "${avail_ver}" ]; then
+            if [[ "${cur_ver}" != "${avail_ver}" ]]; then
                 vc_log_msg "ustreamer new version available: ${avail_ver} (${cur_ver})."
             fi
         popd || exit 1
@@ -58,17 +58,17 @@ versioncontrol() {
         local cur_ver avail_ver
             avail_ver="$(dpkg-query -W ffmpeg | awk -F':' '{print $2}')"
             cur_ver="$(ffmpeg -version | awk 'NR==1 {print $3}')"
-            if [ "${cur_ver}" == "${avail_ver}" ]; then
+            if [[ "${cur_ver}" == "${avail_ver}" ]]; then
                 vc_log_msg "ffmpeg is up to date. (${cur_ver})"
             fi
-            if [ "${cur_ver}" != "${avail_ver}" ]; then
+            if [[ "${cur_ver}" != "${avail_ver}" ]]; then
                 vc_log_msg "ffmpeg new version available: ${avail_ver} (${cur_ver})."
             fi
     }
 
     ### MAIN
-    main() {
-        if [ "$(log_level)" != "quiet" ]; then
+    function main {
+        if [[ "${CROWSNEST_LOG_LEVEL}" != "quiet" ]]; then
             get_ustreamer_version
             get_ffmpeg_version
         fi
