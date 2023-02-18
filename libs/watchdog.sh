@@ -54,7 +54,9 @@ function crowsnest_watchdog {
         local gcd
         for i in $(crudini --existing=file --get "${CROWSNEST_CFG}" | \
         sed '/crowsnest/d' | cut -d ' ' -f2); do
-        gcd+=("${i}")
+            if [[ ! "${i}" =~ "/base/soc" ]]; then
+                gcd+=("${i}")
+            fi
         done
         echo "${gcd[@]}"
     }
