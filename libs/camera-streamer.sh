@@ -44,8 +44,15 @@ function run_ayucamstream() {
     # Set device
     start_param+=( -camera-path="${dev}" )
 
+    # Detect libcamera device and add start param accordingly
+    if [[ "${dev}" =~ "/base/soc" ]]; then
+        start_param+=( -camera-type=libcamera )
+        start_param+=( -camera-format=YUYV )
+    fi
+
     # Use MJPEG Hardware encoder if possible
-    if [ "$(detect_mjpeg "${cam_sec}")" = "1" ]; then
+    if [ "$(detect_mjpeg "${cam_sec}")" = "1" ] &&
+    [[ ! "${dev}" =~ "/base/soc" ]]; then
         start_param+=( -camera-format=MJPG )
     fi
 
