@@ -31,6 +31,11 @@ CSTREAMER_REPO="https://github.com/ayufan-research/camera-streamer.git"
 CSTREAMER_BRANCH="develop"
 ARCH="$(uname -m)"
 
+# Helper messages
+show_help() {
+    printf "Usage %s [options]\n" "$(basename "${0}")"
+}
+
 # Helper funcs
 ## Check if device is Raspberry Pi
 is_raspberry_pi() {
@@ -55,11 +60,12 @@ main() {
 }
 
 
+## Error exit if no args given, show help
 if [[ $# -eq "0" ]]; then
-    echo "Show help"
+    show_help
     exit 1
 fi
-
+## Get opts
 while true; do
     case "${1}" in
         -b|--build)
@@ -71,12 +77,11 @@ while true; do
             break
         ;;
         *)
-            echo "Show help"
+            printf "Unknown option: %s" "${1}"
+            show_help
             exit 0
         ;;
-
     esac
-
 done
 
 main
