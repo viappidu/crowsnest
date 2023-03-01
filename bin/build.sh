@@ -25,7 +25,7 @@ set -Ee
 BASE_CN_BIN_PATH="$(dirname "$(readlink -f "${0}")")"
 
 # Clone Flags
-CLONE_FLAGS="--depth\=1 --single-branch"
+CLONE_FLAGS=(--depth=1 --single-branch)
 
 # Ustreamer repo
 USTREAMER_PATH="ustreamer"
@@ -91,9 +91,10 @@ clone_ustreamer() {
         printf "%s already exist ... [SKIPPED]" "${USTREAMER_PATH}"
         return
     fi
-    git clone "${CLONE_FLAGS}" "${USTREAMER_REPO}" \
+    git clone  "${USTREAMER_REPO}" \
         -b "${USTREAMER_BRANCH}" \
-        "${BASE_CN_BIN_PATH}"/"${USTREAMER_PATH}"
+        "${BASE_CN_BIN_PATH}"/"${USTREAMER_PATH}" \
+        "${CLONE_FLAGS[@]}"
 }
 
 ### Clone camera-streamer
@@ -102,9 +103,10 @@ clone_cstreamer() {
         printf "%s already exist ... [SKIPPED]" "${CSTREAMER_PATH}"
         return
     fi
-    git clone "${CLONE_FLAGS}" "${CSTREAMER_REPO}" \
+    git clone  "${CSTREAMER_REPO}" \
         -b "${CSTREAMER_BRANCH}" \
-        "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}"
+        "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}" \
+        "${CLONE_FLAGS[@]}"
 }
 
 ### Clone Apps
