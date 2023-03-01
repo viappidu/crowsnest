@@ -25,8 +25,10 @@ set -Ee
 CLONE_FLAGS="--depth=1 --single-branch"
 USTREAMER_PATH="ustreamer"
 USTREAMER_REPO="https://github.com/pikvm/ustreamer.git"
+USTREAMER_BRANCH="master"
 CSTREAMER_PATH="camera-streamer"
 CSTREAMER_REPO="https://github.com/ayufan-research/camera-streamer.git"
+CSTREAMER_BRANCH="develop"
 ARCH="$(uname -m)"
 
 # Helper funcs
@@ -40,8 +42,9 @@ is_raspberry_pi() {
     fi
 }
 
+## Get avail mem
 get_avail_mem() {
-    awk '{print $2}' <<< /proc/meminfo
+    grep "MemTotal" /proc/meminfo | awk '{print $2}'
 }
 
 
