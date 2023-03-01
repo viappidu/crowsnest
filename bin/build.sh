@@ -74,13 +74,13 @@ get_avail_mem() {
 ## MAIN funcs
 ### Delete repo folder
 delete_apps() {
-    for i in "${ALL_PATHS[@]}"; do
-        if [[ -d "${i}" ]]; then
-            printf "Deleting '%s' ... \n" "${i}"
-            rm -rf "${i}"
+    for path in "${ALL_PATHS[@]}"; do
+        if [[ ! -d "${path}" ]]; then
+            printf "'%s' does not exist! ... [SKIPPED]\n" "${path}"
         fi
-        if [[ ! -d "${i}" ]]; then
-            printf "'%s' does not exist! ... [SKIPPED]\n" "${i}"
+        if [[ -d "${path}" ]]; then
+            printf "Deleting '%s' ... \n" "${path}"
+            rm -rf "${path}"
         fi
     done
 }
