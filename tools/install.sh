@@ -343,14 +343,10 @@ clone_ustreamer() {
     fi
     sudo -u "${BASE_USER}" \
     git clone "${CROWSNEST_USTREAMER_REPO_SHIP}" \
-    -b "${CROWSNEST_USTREAMER_REPO_BRANCH}" bin/ustreamer
-    ## Buster workaround
-    ## ustreamer support omx only till version 4.13
-    ## so stick to that version
+    -b "${CROWSNEST_USTREAMER_REPO_BRANCH}" \
+    --depth=1 --single-branch bin/ustreamer
     if [[ "$(get_os_version buster)" != "0" ]]; then
-        pushd bin/ustreamer &> /dev/null || exit 1
-        git reset --hard 61ab2a8
-        popd &> /dev/null || exit 1
+        printf "NOTE: Crowsnest has dropped support for OMX in ustreamer ... \n"
     fi
 }
 
@@ -361,15 +357,22 @@ clone_cstreamer() {
     fi
     sudo -u "${BASE_USER}" \
     git clone "${CROWSNEST_CAMERA_STREAMER_REPO_SHIP}" --recursive \
-    -b "${CROWSNEST_CAMERA_STREAMER_REPO_BRANCH}" bin/camera-streamer
+    -b "${CROWSNEST_CAMERA_STREAMER_REPO_BRANCH}" \
+    --depth=1 --single-branch bin/camera-streamer
 }
 
 build_apps() {
     echo -e "Build dependend Stream Apps ..."
     echo -e "Cloning ustreamer repository ..."
     clone_ustreamer
-    echo -e "Cloning camera-streamer repository ..."
-    clone_cstreamer
+    if [[ "$(is_raspberry_pi)" = "1" ]]; then
+        echo -e "Cloning camera-streamer repository ..."
+        clone_cstreamer
+    fi
+    if [[ "$(is_raspberry_pi)" = "0" ]]; then
+        echo -e "NOTE: Camera-streamer is only supported on Raspberry Pi's! ..."
+        echo -e "Install of camera-streamer skipped ..."
+    fi
     pushd bin > /dev/null
     sudo -u "${BASE_USER}" make all
     popd > /dev/null

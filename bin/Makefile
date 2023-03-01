@@ -23,6 +23,8 @@ ARCH = $(shell uname -m)
 # Custom Flags
 MAKEFLAGS += -j$(shell nproc)
 
+IS_RPI = $(shell grep -q "Raspberry" /proc/device-tree/model && echo 1 || echo 0)
+
 # Ustreamer cloned?
 USTREAMER_EXIST = $(shell [ -d ustreamer ] > /dev/null && echo 1 || echo 0)
 
@@ -37,7 +39,7 @@ all:
 ustreamer-bin:
 ifeq ($(USTREAMER_EXIST), 0)
 	$(info INFO: ustreamer not found, cloning repository.)
-	$(shell git clone $(USTREAMER_REPO) $(USTREAMER_PATH))
+	$(shell git clone $(USTREAMER_REPO) $(USTREAMER_PATH) --depth=1 --single-branch)
 else
 	$(info INFO: ustreamer found.)
 endif
@@ -45,9 +47,9 @@ endif
 	$(MAKE) -C $(USTREAMER_PATH)
 
 cstreamer-bin:
-ifeq ($(CSTREAMER_EXIST), 0)
+ifeq ($(CSTREAMER_EXIST), 0) && ($(IS_RPI), 1)
 	$(info INFO: camera-streamer not found, cloning repository.)
-	@git clone $(CSTREAMER_REPO) --recursive
+	@git clone $(CSTREAMER_REPO) --recursive --depth=1 --single-branch
 else
 	$(info INFO: camera-streamer found.)
 endif
