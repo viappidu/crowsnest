@@ -63,7 +63,7 @@ delete_apps() {
     done
 }
 
-## MAIN
+## MAIN FUNC
 main() {
     ## Error exit if no args given, show help
     if [[ $# -eq "0" ]]; then
@@ -90,6 +90,7 @@ main() {
             ;;
             -d|--delete)
                 delete_apps
+                break
             ;;
             -r|--reclone)
                 CLONE_APPS="1"
@@ -103,9 +104,7 @@ main() {
     done
 }
 
-
-
-
+#### MAIN
 main "${@}"
 exit 0
 
