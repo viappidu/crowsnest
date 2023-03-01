@@ -59,11 +59,11 @@ get_avail_mem() {
 delete_apps() {
     for i in "${USTREAMER_PATH}" "${CSTREAMER_PATH}"; do
         if [[ -d "${i}" ]]; then
-            printf "Deleting '%s' ... " "${i}"
+            printf "Deleting '%s' ... \n" "${i}"
             rm -rf ./"${i}"
         fi
         if [[ ! -d "${i}" ]]; then
-            printf "'%s' does not exist! ... [SKIPPED]" "${i}"
+            printf "'%s' does not exist! ... [SKIPPED]\n" "${i}"
         fi
     done
 }
