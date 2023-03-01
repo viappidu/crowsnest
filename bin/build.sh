@@ -150,11 +150,12 @@ main() {
             -r|--reclone)
                 delete_apps
                 clone_apps
+                break
             ;;
             *)
                 printf "Unknown option: %s" "${1}"
                 show_help
-                exit 0
+                break
             ;;
         esac
     done
