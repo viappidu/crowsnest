@@ -34,6 +34,10 @@ ARCH="$(uname -m)"
 # Helper messages
 show_help() {
     printf "Usage %s [options]\n" "$(basename "${0}")"
+    printf "\t-b or --build\tBuild Apps\n"
+    printf "\t-c or --clean\tClean Apps\n"
+    printf "\t-d or --delete\tDelete cloned Apps\n"
+    printf "\t-r or --reclone\tClone Apps again\n"
 }
 
 # Helper funcs
@@ -76,6 +80,12 @@ while true; do
         -c|--clean)
             CLEAN_APPS="1"
             break
+        ;;
+        -d|--delete)
+            DELETE_APPS="1"
+        ;;
+        -r|--reclone)
+            CLONE_APPS="1"
         ;;
         *)
             printf "Unknown option: %s" "${1}"
