@@ -77,7 +77,7 @@ delete_apps() {
     for i in "${ALL_PATHS[@]}"; do
         if [[ -d "${i}" ]]; then
             printf "Deleting '%s' ... \n" "${i}"
-            rm -rf ./"${i}"
+            rm -rf "${i}"
         fi
         if [[ ! -d "${i}" ]]; then
             printf "'%s' does not exist! ... [SKIPPED]\n" "${i}"
