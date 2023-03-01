@@ -107,6 +107,15 @@ clone_cstreamer() {
         "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}"
 }
 
+### Clone Apps
+clone_apps() {
+    local apps
+    apps="ustreamer cstreamer"
+    for app in ${apps}; do
+        clone_"${app}"
+    done
+}
+
 ## MAIN FUNC
 main() {
     ## Error exit if no args given, show help
@@ -137,7 +146,8 @@ main() {
                 break
             ;;
             -r|--reclone)
-                CLONE_APPS="1"
+                delete_apps
+                clone_apps
             ;;
             *)
                 printf "Unknown option: %s" "${1}"
