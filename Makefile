@@ -52,6 +52,9 @@ clean:
 config:
 	@bash -c 'tools/configure.sh'
 
+update:
+	@git fetch && git pull
+
 report:
 	@if [ -f ~/report.txt ]; then rm -f ~/report.txt; fi
 	@bash -c 'tools/dev-helper.sh -a >> ~/report.txt'
