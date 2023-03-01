@@ -88,7 +88,7 @@ delete_apps() {
 ### Clone ustreamer
 clone_ustreamer() {
     if [[ -d "${BASE_CN_BIN_PATH}"/"${USTREAMER_PATH}" ]]; then
-        printf "%s already exist ... [SKIPPED]" "${USTREAMER_PATH}"
+        printf "%s already exist ... [SKIPPED]\n" "${USTREAMER_PATH}"
         return
     fi
     git clone  "${USTREAMER_REPO}" \
@@ -100,13 +100,13 @@ clone_ustreamer() {
 ### Clone camera-streamer
 clone_cstreamer() {
     if [[ -d "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}" ]]; then
-        printf "%s already exist ... [SKIPPED]" "${CSTREAMER_PATH}"
+        printf "%s already exist ... [SKIPPED]\n" "${CSTREAMER_PATH}"
         return
     fi
     git clone  "${CSTREAMER_REPO}" \
         -b "${CSTREAMER_BRANCH}" \
         "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}" \
-        "${CLONE_FLAGS[@]}"
+        "${CLONE_FLAGS[@]}" --recursive
 }
 
 ### Clone Apps
