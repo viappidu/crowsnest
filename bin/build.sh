@@ -42,8 +42,8 @@ ARCH="$(uname -m)"
 
 # Paths of repos
 ALL_PATHS=(
-    "${USTREAMER_PATH}"
-    "${CSTREAMER_PATH}"
+    "${BASE_CN_BIN_PATH}"/"${USTREAMER_PATH}"
+    "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}"
 )
 
 # Helper messages
@@ -71,6 +71,7 @@ get_avail_mem() {
     grep "MemTotal" /proc/meminfo | awk '{print $2}'
 }
 
+## MAIN funcs
 ### Delete repo folder
 delete_apps() {
     for i in "${ALL_PATHS[@]}"; do
@@ -82,6 +83,28 @@ delete_apps() {
             printf "'%s' does not exist! ... [SKIPPED]\n" "${i}"
         fi
     done
+}
+
+### Clone ustreamer
+clone_ustreamer() {
+    if [[ -d "${BASE_CN_BIN_PATH}"/"${USTREAMER_PATH}" ]]; then
+        printf "%s already exist ... [SKIPPED]" "${USTREAMER_PATH}"
+        return
+    fi
+    git clone "${CLONE_FLAGS}" "${USTREAMER_REPO}" \
+        -b "${USTREAMER_BRANCH}" \
+        "${BASE_CN_BIN_PATH}"/"${USTREAMER_PATH}"
+}
+
+### Clone camera-streamer
+clone_cstreamer() {
+    if [[ -d "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}" ]]; then
+        printf "%s already exist ... [SKIPPED]" "${CSTREAMER_PATH}"
+        return
+    fi
+    git clone "${CLONE_FLAGS}" "${CSTREAMER_REPO}" \
+        -b "${CSTREAMER_BRANCH}" \
+        "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}"
 }
 
 ## MAIN FUNC
