@@ -62,6 +62,7 @@ main() {
 
 ## Error exit if no args given, show help
 if [[ $# -eq "0" ]]; then
+    printf "ERROR: No options given ...\n"
     show_help
     exit 1
 fi
