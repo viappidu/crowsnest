@@ -25,7 +25,7 @@ set -Ee
 BASE_CN_BIN_PATH="$(dirname "$(readlink -f "${0}")")"
 
 # Clone Flags
-CLONE_FLAGS="--depth=1 --single-branch"
+CLONE_FLAGS="--depth\=1 --single-branch"
 
 # Ustreamer repo
 USTREAMER_PATH="ustreamer"
@@ -159,7 +159,6 @@ main() {
 }
 
 #### MAIN
-echo ${BASE_CN_BIN_PATH}
 main "${@}"
 exit 0
 
