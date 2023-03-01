@@ -55,6 +55,11 @@ main() {
 }
 
 
+if [[ $# -eq "0" ]]; then
+    echo "Show help"
+fi
 
 main
 exit 0
+
+#### EOF
