@@ -34,10 +34,10 @@ ARCH="$(uname -m)"
 # Helper messages
 show_help() {
     printf "Usage %s [options]\n" "$(basename "${0}")"
-    printf "\t-b or --build\tBuild Apps\n"
-    printf "\t-c or --clean\tClean Apps\n"
-    printf "\t-d or --delete\tDelete cloned Apps\n"
-    printf "\t-r or --reclone\tClone Apps again\n\n"
+    printf "\t-b or --build\t\tBuild Apps\n"
+    printf "\t-c or --clean\t\tClean Apps\n"
+    printf "\t-d or --delete\t\tDelete cloned Apps\n"
+    printf "\t-r or --reclone\t\tClone Apps again\n\n"
 }
 
 # Helper funcs
