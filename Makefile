@@ -40,10 +40,10 @@ uninstall:
 	@bash -c 'tools/uninstall.sh'
 
 build:
-	@bash -c 'bin/build.sh'
+	bash -c 'bin/build.sh'
 
 buildclean:
-	@bash -c 'bin/build.sh --clean'
+	bash -c 'bin/build.sh --clean'
 
 clean:
 	@if [ -f tools/.config ]; then rm -f tools/.config; fi
