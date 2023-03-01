@@ -56,6 +56,12 @@ get_avail_mem() {
     grep "MemTotal" /proc/meminfo | awk '{print $2}'
 }
 
+delete_apps() {
+    for i in "${USTREAMER_PATH}" "${CSTREAMER_PATH}"; do
+        printf "Deleting '%s' ... " "${i}"
+        rm -rf ./"${i}"
+    done
+}
 
 ## MAIN
 main() {
