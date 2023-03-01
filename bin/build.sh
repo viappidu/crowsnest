@@ -57,7 +57,27 @@ main() {
 
 if [[ $# -eq "0" ]]; then
     echo "Show help"
+    exit 1
 fi
+
+while true; do
+    case "${1}" in
+        -b|--build)
+            BUILD_APPS="1"
+            break
+        ;;
+        -c|--clean)
+            CLEAN_APPS="1"
+            break
+        ;;
+        *)
+            echo "Show help"
+            exit 0
+        ;;
+
+    esac
+
+done
 
 main
 exit 0
