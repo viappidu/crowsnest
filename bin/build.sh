@@ -59,43 +59,48 @@ get_avail_mem() {
 
 ## MAIN
 main() {
-    get_avail_mem
-    echo "main"
+    ## Error exit if no args given, show help
+    if [[ $# -eq "0" ]]; then
+        printf "ERROR: No options given ...\n"
+        show_help
+        exit 1
+    fi
+    ## Error exit if too many args given
+    if [[ $# -gt "1" ]]; then
+        printf "ERROR: Too many options given ...\n"
+        show_help
+        exit 1
+    fi
+    ## Get opts
+    while true; do
+        case "${1}" in
+            -b|--build)
+                BUILD_APPS="1"
+                break
+            ;;
+            -c|--clean)
+                CLEAN_APPS="1"
+                break
+            ;;
+            -d|--delete)
+                DELETE_APPS="1"
+            ;;
+            -r|--reclone)
+                CLONE_APPS="1"
+            ;;
+            *)
+                printf "Unknown option: %s" "${1}"
+                show_help
+                exit 0
+            ;;
+        esac
+    done
 }
 
 
-## Error exit if no args given, show help
-if [[ $# -eq "0" ]]; then
-    printf "ERROR: No options given ...\n"
-    show_help
-    exit 1
-fi
-## Get opts
-while true; do
-    case "${1}" in
-        -b|--build)
-            BUILD_APPS="1"
-            break
-        ;;
-        -c|--clean)
-            CLEAN_APPS="1"
-            break
-        ;;
-        -d|--delete)
-            DELETE_APPS="1"
-        ;;
-        -r|--reclone)
-            CLONE_APPS="1"
-        ;;
-        *)
-            printf "Unknown option: %s" "${1}"
-            show_help
-            exit 0
-        ;;
-    esac
-done
 
-main
+
+main "${@}"
 exit 0
 
 #### EOF
