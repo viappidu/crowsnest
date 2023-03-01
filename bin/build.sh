@@ -37,7 +37,7 @@ show_help() {
     printf "\t-b or --build\tBuild Apps\n"
     printf "\t-c or --clean\tClean Apps\n"
     printf "\t-d or --delete\tDelete cloned Apps\n"
-    printf "\t-r or --reclone\tClone Apps again\n"
+    printf "\t-r or --reclone\tClone Apps again\n\n"
 }
 
 # Helper funcs
