@@ -77,7 +77,7 @@ get_avail_mem() {
 delete_apps() {
     for path in "${ALL_PATHS[@]}"; do
         if [[ ! -d "${path}" ]]; then
-            printf "'%s' does not exist! ... [SKIPPED]\n" "${path}"
+            printf "'%s' does not exist! Delete skipped ...\n" "${path}"
         fi
         if [[ -d "${path}" ]]; then
             printf "Deleting '%s' ... \n" "${path}"
