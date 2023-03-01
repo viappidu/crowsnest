@@ -43,7 +43,7 @@ build:
 	@bash -c 'bin/build.sh'
 
 buildclean:
-	$(MAKE) -C $(BIN_FOLDER) clean
+	@bash -c 'bin/build.sh --clean'
 
 clean:
 	@if [ -f tools/.config ]; then rm -f tools/.config; fi
