@@ -89,7 +89,7 @@ main() {
                 break
             ;;
             -d|--delete)
-                DELETE_APPS="1"
+                delete_apps
             ;;
             -r|--reclone)
                 CLONE_APPS="1"
