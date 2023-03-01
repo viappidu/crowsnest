@@ -125,6 +125,14 @@ clone_apps() {
     done
 }
 
+clean_apps() {
+    for app in "${ALL_PATHS[@]}"; do
+        pushd "${app}" &> /dev/null || exit 1
+        make clean
+        popd &> /dev/null || exit 1
+    done
+}
+
 ## MAIN FUNC
 main() {
     ## Error exit if no args given, show help
@@ -147,7 +155,7 @@ main() {
                 break
             ;;
             -c|--clean)
-                CLEAN_APPS="1"
+                clean_apps
                 break
             ;;
             -d|--delete)
