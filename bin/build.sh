@@ -27,7 +27,7 @@ USTREAMER_PATH="ustreamer"
 USTREAMER_REPO="https://github.com/pikvm/ustreamer.git"
 CSTREAMER_PATH="camera-streamer"
 CSTREAMER_REPO="https://github.com/ayufan-research/camera-streamer.git"
-ARCH="$(shell uname -m)"
+ARCH="$(uname -m)"
 
 # Helper funcs
 ## Check if device is Raspberry Pi
