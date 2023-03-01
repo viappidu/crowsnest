@@ -30,6 +30,10 @@ CSTREAMER_PATH="camera-streamer"
 CSTREAMER_REPO="https://github.com/ayufan-research/camera-streamer.git"
 CSTREAMER_BRANCH="develop"
 ARCH="$(uname -m)"
+ALL_PATHS=(
+    ${USTREAMER_PATH}
+    ${CSTREAMER_PATH}
+)
 
 # Helper messages
 show_help() {
@@ -57,7 +61,7 @@ get_avail_mem() {
 }
 
 delete_apps() {
-    for i in "${USTREAMER_PATH}" "${CSTREAMER_PATH}"; do
+    for i in "${ALL_PATHS[@]}"; do
         if [[ -d "${i}" ]]; then
             printf "Deleting '%s' ... \n" "${i}"
             rm -rf ./"${i}"
