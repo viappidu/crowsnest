@@ -40,7 +40,7 @@ uninstall:
 	@bash -c 'tools/uninstall.sh'
 
 build:
-	$(MAKE) -C $(BIN_FOLDER)
+	@bash -c 'bin/build.sh'
 
 buildclean:
 	$(MAKE) -C $(BIN_FOLDER) clean
