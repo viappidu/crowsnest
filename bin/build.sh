@@ -21,18 +21,29 @@ set -Ee
 # set -x
 
 # Global vars
+# Base Path
+BASE_CN_BIN_PATH="$(dirname "$(readlink -f "${0}")")"
 
+# Clone Flags
 CLONE_FLAGS="--depth=1 --single-branch"
+
+# Ustreamer repo
 USTREAMER_PATH="ustreamer"
 USTREAMER_REPO="https://github.com/pikvm/ustreamer.git"
 USTREAMER_BRANCH="master"
+
+# Camera-streamer repo
 CSTREAMER_PATH="camera-streamer"
 CSTREAMER_REPO="https://github.com/ayufan-research/camera-streamer.git"
 CSTREAMER_BRANCH="develop"
+
+# CPU architecture
 ARCH="$(uname -m)"
+
+# Paths of repos
 ALL_PATHS=(
-    ${USTREAMER_PATH}
-    ${CSTREAMER_PATH}
+    "${USTREAMER_PATH}"
+    "${CSTREAMER_PATH}"
 )
 
 # Helper messages
@@ -44,8 +55,8 @@ show_help() {
     printf "\t-r or --reclone\t\tClone Apps again\n\n"
 }
 
-# Helper funcs
-## Check if device is Raspberry Pi
+## Helper funcs
+### Check if device is Raspberry Pi
 is_raspberry_pi() {
     if [[ -f /proc/device-tree/model ]] &&
     grep -q "Raspberry" /proc/device-tree/model; then
@@ -55,11 +66,12 @@ is_raspberry_pi() {
     fi
 }
 
-## Get avail mem
+### Get avail mem
 get_avail_mem() {
     grep "MemTotal" /proc/meminfo | awk '{print $2}'
 }
 
+### Delete repo folder
 delete_apps() {
     for i in "${ALL_PATHS[@]}"; do
         if [[ -d "${i}" ]]; then
@@ -114,6 +126,7 @@ main() {
 }
 
 #### MAIN
+echo ${BASE_CN_BIN_PATH}
 main "${@}"
 exit 0
 
