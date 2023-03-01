@@ -49,6 +49,7 @@ ALL_PATHS=(
 # Helper messages
 show_help() {
     printf "Usage %s [options]\n" "$(basename "${0}")"
+    printf "\t-h or --help\t\tShows this help message\n"
     printf "\t-b or --build\t\tBuild Apps\n"
     printf "\t-c or --clean\t\tClean Apps\n"
     printf "\t-d or --delete\t\tDelete cloned Apps\n"
@@ -91,7 +92,7 @@ clone_ustreamer() {
         printf "%s already exist ... [SKIPPED]\n" "${USTREAMER_PATH}"
         return
     fi
-    git clone  "${USTREAMER_REPO}" \
+    git clone "${USTREAMER_REPO}" \
         -b "${USTREAMER_BRANCH}" \
         "${BASE_CN_BIN_PATH}"/"${USTREAMER_PATH}" \
         "${CLONE_FLAGS[@]}"
@@ -99,11 +100,12 @@ clone_ustreamer() {
 
 ### Clone camera-streamer
 clone_cstreamer() {
+    ## Special handling because only supported on Raspberry Pi
     if [[ -d "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}" ]]; then
         printf "%s already exist ... [SKIPPED]\n" "${CSTREAMER_PATH}"
         return
     fi
-    git clone  "${CSTREAMER_REPO}" \
+    git clone "${CSTREAMER_REPO}" \
         -b "${CSTREAMER_BRANCH}" \
         "${BASE_CN_BIN_PATH}"/"${CSTREAMER_PATH}" \
         "${CLONE_FLAGS[@]}" --recursive
@@ -145,6 +147,10 @@ main() {
             ;;
             -d|--delete)
                 delete_apps
+                break
+            ;;
+            -h|--help)
+                show_help
                 break
             ;;
             -r|--reclone)
