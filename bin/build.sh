@@ -127,10 +127,12 @@ clone_apps() {
 
 clean_apps() {
     for app in "${ALL_PATHS[@]}"; do
+        printf "\nRuning 'make clean' in %s ... \n" "${app}"
         pushd "${app}" &> /dev/null || exit 1
         make clean
         popd &> /dev/null || exit 1
     done
+    printf "\nRuning 'make clean' ... [DONE]\n"
 }
 
 ## MAIN FUNC
