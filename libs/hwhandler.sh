@@ -17,17 +17,17 @@
 set -Ee
 
 ### Detect Hardware
-function detect_avail_cams {
+detect_avail_cams() {
     local avail realpath
     avail="$(find /dev/v4l/by-id/ -iname "*index0" 2> /dev/null)"
     count="$(echo "${avail}" | wc -l)"
-    if [ -d "/dev/v4l/by-id/" ] &&
-    [ -n "${avail}" ]; then
-        log_msg "INFO: Found ${count} available camera(s)"
+    if [[ -d "/dev/v4l/by-id/" ]] &&
+    [[ -n "${avail}" ]]; then
+        log_msg "INFO: Found ${count} available v4l2 (UVC) camera(s)"
         echo "${avail}" | while read -r v4l; do
             realpath=$(readlink -e "${v4l}")
             log_msg "${v4l} -> ${realpath}"
-            if [ "$(log_level)" != "quiet" ]; then
+            if [[ "${CROWSNEST_LOG_LEVEL}" != "quiet" ]]; then
                 list_cam_formats "${v4l}"
                 list_cam_v4l2ctrls "${v4l}"
             fi
@@ -37,74 +37,86 @@ function detect_avail_cams {
     fi
 }
 
-function detect_avail_csi {
-    local avail count realpath
-    avail="$(find /dev/v4l/by-path/ -iname "*csi*index0" 2> /dev/null)"
-    count="$(echo "${avail}" | wc -l)"
-    if [ -d "/dev/v4l/by-path/" ] &&
-    [ -n "${avail}" ]; then
-        log_msg "INFO: Found ${count} available csi device(s)"
-        echo "${avail}" | while read -r csi; do
-            realpath=$(readlink -e "${csi}")
-            log_msg "${csi} -> ${realpath}"
-        done
-    else
-        log_msg "INFO: No usable CSI Devices found."
-    fi
-}
-
-# Used for "verbose" and "debug" logging in logging.sh
-function list_cam_formats {
-    local device formats
+## Used for "verbose" and "debug" logging in logging.sh
+list_cam_formats() {
+    local device prefix
     device="${1}"
-    formats="$(v4l2-ctl -d "${device}" --list-formats-ext | sed '1,3d')"
+    prefix="$(date +'[%D %T]') crowsnest:"
     log_msg "Supported Formats:"
-    echo "${formats}" | while read -r i; do
-        log_msg "\t\t${i}"
-    done
+    while read -r i; do
+        printf "%s\t\t%s\n" "${prefix}" "${i}" >> "${CROWSNEST_LOG_PATH}"
+    done < <(v4l2-ctl -d "${device}" --list-formats-ext | sed '1,3d')
 }
 
-function list_cam_v4l2ctrls {
-    local device ctrls
+list_cam_v4l2ctrls() {
+    local device prefix
     device="${1}"
-    ctrls="$(v4l2-ctl -d "${device}" --list-ctrls-menus)"
+    prefix="$(date +'[%D %T]') crowsnest:"
     log_msg "Supported Controls:"
-    echo "${ctrls}" | while read -r i; do
-        log_msg "\t\t${i}"
-    done
+    while read -r i; do
+        printf "%s\t\t%s\n" "${prefix}" "${i}" >> "${CROWSNEST_LOG_PATH}"
+    done < <(v4l2-ctl -d "${device}" --list-ctrls-menus)
 }
 
-# Determine connected "raspicam" device
-function detect_raspicam {
+## Determine connected libcamera (CSI) device
+detect_libcamera() {
     local avail
-    if [ -f /proc/device-tree/model ] &&
-    grep -q "Raspberry" /proc/device-tree/model; then
-        avail="$(vcgencmd get_camera | awk -F '=' '{ print $3 }' | cut -d',' -f1)"
-    else
-        avail="0"
+    if [[ "$(is_raspberry_pi)" = "1" ]] &&
+    [[ -x "$(command -v libcamera-hello)" ]]; then
+        avail="$(libcamera-hello --list-cameras | sed '/^\[.*\].*/d' | awk 'NR==1 {print $1}')"
+        if [[ "${avail}" = "Available" ]]; then
+            echo "1"
+        else
+            echo "0"
+        fi
     fi
-    echo "${avail}"
+    if [[ "$(is_raspberry_pi)" = "0" ]]; then
+        echo "0"
+    fi
 }
 
-function dev_is_raspicam {
-    v4l2-ctl --list-devices |  grep -A1 -e 'mmal' | \
-    awk 'NR==2 {print $1}'
+## Spit /base/soc path for libcamera device
+get_libcamera_path() {
+    if [[ "$(is_raspberry_pi)" = "1" ]] &&
+    [[ -x "$(command -v libcamera-hello)" ]]; then
+        libcamera-hello --list-cameras | sed '1,2d' \
+        | grep "\(/base/*\)" | cut -d"(" -f2 | tr -d '$)'
+    fi
 }
 
-# Determine if cam has H.264 Hardware encoder
-# call detect_h264 <nameornumber> ex.: detect_h264 foobar
-# returns 1 = true / 0 = false ( numbers are strings! not int!)
-function detect_h264 {
+## Determine if cam has H.264 Hardware encoder
+## call detect_h264 <nameornumber> ex.: detect_h264 foobar
+## returns 1 = true / 0 = false ( numbers are strings! not int!)
+detect_h264() {
     local dev
     dev="$(get_param "cam ${1}" device)"
     v4l2-ctl -d "${dev}" --list-formats-ext | grep -c "[hH]264"
 }
 
-# Determine if cam has MJPEG Hardware encoder
-# call detect_mjpeg <nameornumber> ex.: detect_mjpeg foobar
-# returns 1 = true / 0 = false ( numbers are strings! not int!)
-function detect_mjpeg {
+## Determine if cam has MJPEG Hardware encoder
+## call detect_mjpeg <nameornumber> ex.: detect_mjpeg foobar
+## returns 1 = true / 0 = false ( numbers are strings! not int!)
+detect_mjpeg() {
     local dev
     dev="$(get_param "cam ${1}" device)"
     v4l2-ctl -d "${dev}" --list-formats-ext | grep -c "Motion-JPEG, compressed"
+}
+
+## Check if device is raspberry sbc
+is_raspberry_pi() {
+    if [[ -f /proc/device-tree/model ]] &&
+    grep -q "Raspberry" /proc/device-tree/model; then
+        echo "1"
+    else
+        echo "0"
+    fi
+}
+
+is_ubuntu_arm() {
+    if [[ "$(is_raspberry_pi)" = "1" ]] &&
+    grep -q "ubuntu" /etc/os-release; then
+        echo "1"
+    else
+        echo "0"
+    fi
 }

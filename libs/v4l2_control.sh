@@ -16,10 +16,12 @@
 # shellcheck enable=require-variable-braces
 
 # Exit upon Errors
-set -eE
+set -Ee
 
 function v4l2_control {
-    log_msg "V4L2 Control:"
+    v4c_log_msg() {
+        log_msg "V4L2 Control: ${1}"
+    }
 
     function main {
         local device v4l2ctl valueless opt_avail
@@ -29,12 +31,12 @@ function v4l2_control {
             # get v4l2ctl parameters
             v4l2ctl="$(get_param "cam ${cam}" v4l2ctl)"
             # if not empty do
-            if [ -n "${v4l2ctl}" ]; then
+            if [[ -n "${v4l2ctl}" ]]; then
                 # Write configured options to Log
-                log_msg "Device: [cam ${cam}]"
-                log_msg "Options: ${v4l2ctl}"
+                v4c_log_msg "Device: [cam ${cam}]"
+                v4c_log_msg "Options: ${v4l2ctl}"
                 # Split options to array
-                IFS=',' read -ra opt < <(echo "${v4l2ctl}"); unset IFS
+                IFS="," read -ra opt < <(echo "${v4l2ctl}" | tr -d " "); unset IFS
                 # loop through options
                 for param in "${opt[@]}"; do
                     # parameter available for device
@@ -42,17 +44,18 @@ function v4l2_control {
                     valueless="$(echo "${param}" | cut -d "=" -f1)"
                     opt_avail="$(v4l2-ctl -d "${device}" -L | \
                     grep -c "${valueless}" || true)"
-                    if [ "${opt_avail}" -eq "0" ]; then
-                        log_msg "Parameter '${param}' not available for '${device}'. Skipped."
+                    if [[ "${opt_avail}" -eq "0" ]]; then
+                        v4c_log_msg "Parameter '${param}' not available for '${device}'. Skipped."
                     else
-                        v4l2-ctl -d "${device}" -c "${param}" 2> /dev/null
+                        v4l2-ctl -d "${device}" -c "${param}" 2> /dev/null ||
+                        v4c_log_msg "Failed to set parameter: '${param}' ..."
                     fi
                 done
-                    if [ "$(log_level)" == "debug" ]; then
+                    if [[ "${CROWSNEST_LOG_LEVEL}" == "debug" ]]; then
                         v4l2-ctl -d "${device}" -L | log_output "v4l2ctl"
                     fi
             else
-                log_msg "No parameters set for [cam ${cam}]. Skipped."
+                v4c_log_msg "No parameters set for [cam ${cam}]. Skipped."
             fi
         done
     }
@@ -123,7 +126,7 @@ function brokenfocus {
                 detected_broken_dev_msg
                 set_focus_absolute "${device}" "${conf_val}"
             fi
-            if [ "$(log_level)" == "debug" ] && [ -n "${cur_val}" ]; then
+            if [[ "${CROWSNEST_LOG_LEVEL}" == "debug" ]] && [[ -n "${cur_val}" ]]; then
                 debug_focus_val_msg "$(get_current_value "${device}")"
             fi
         done
@@ -132,31 +135,4 @@ function brokenfocus {
 ### MAIN
 main
 
-}
-
-# This function is to set bitrate on raspicams.
-# If raspicams set to variable bitrate, they tend to show
-# a "block-like" view after reboots
-# To prevent that blockyfix should apply constant bitrate befor start of ustreamer
-# See https://github.com/mainsail-crew/crowsnest/issues/33
-function blockyfix {
-    local dev v4l2ctl
-
-    # call set_bitrate <device>
-    function set_bitrate {
-        v4l2-ctl -d "${1}" -c video_bitrate_mode=1 2> /dev/null
-        v4l2-ctl -d "${1}" -c video_bitrate=15000000 2> /dev/null
-    }
-
-    for cam in $(configured_cams); do
-        dev="$(get_param "cam ${cam}" device)"
-        v4l2ctl="$(get_param "cam ${cam}" v4l2ctl)"
-        if [ "${dev}" = "$(dev_is_raspicam)" ]; then
-            if [ -z "${v4l2ctl}" ] ||
-            [ "$(grep -c "video_bitrate" <<< "${v4l2ctl}")" == "0" ]; then
-                set_bitrate "${dev}"
-                blockyfix_msg_1
-            fi
-        fi
-    done
 }

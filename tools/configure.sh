@@ -14,16 +14,22 @@
 # Exit on errors
 set -Ee
 
+## Debug
+# set -x
+
+
 # Global Vars
 CN_CONFIG_USER=$(whoami)
 CN_CONFIG_CONFIGFILE="tools/.config"
 CN_CONFIG_ROOTPATH="/home/${CN_CONFIG_USER}/printer_data"
-CN_CONFIG_CONFIGPATH="${CN_CONFIG_ROOTPATH}/config"
-CN_CONFIG_LOGPATH="${CN_CONFIG_ROOTPATH}/logs"
-CN_CONFIG_ENVPATH="${CN_CONFIG_ROOTPATH}/systemd"
-CN_MOONRAKER_CONFIG_PATH="${CN_CONFIG_CONFIGPATH}/moonraker.conf"
+# CN_CONFIG_CONFIGPATH="${CN_CONFIG_ROOTPATH}/config"
+# CN_CONFIG_LOGPATH="${CN_CONFIG_ROOTPATH}/logs"
+# CN_CONFIG_ENVPATH="${CN_CONFIG_ROOTPATH}/systemd"
+# CN_MOONRAKER_CONFIG_PATH="${CN_CONFIG_CONFIGPATH}/moonraker.conf"
 CN_USTREAMER_REPO="https://github.com/pikvm/ustreamer.git"
 CN_USTREAMER_BRANCH="master"
+CN_CAMERA_STREAMER_REPO="https://github.com/ayufan-research/camera-streamer.git"
+CN_CAMERA_STREAMER_BRANCH="master"
 
 ### Messages
 header_msg() {
@@ -54,6 +60,14 @@ default_path_msg() {
     echo -e "Hit ENTER to use default."
 }
 
+root_path_msg() {
+    header_msg
+    echo -e "Please specify path to your 'printer_data' root path\n"
+    echo -e "For example: /home/pi/voron_data or /home/kwad/ender_data"
+    echo -e "\t\e[34mNOTE:\e[0m File names are hardcoded! Also skip trailing backslash!"
+    echo -e "\tDefault: \e[32m${CN_CONFIG_ROOTPATH}\e[0m\n"
+}
+
 config_path_msg() {
     header_msg
     echo -e "Please specify path to config file (crowsnest.conf)\n"
@@ -73,16 +87,6 @@ env_path_msg() {
     echo -e "Please specify path to service environment file (crowsnest.env)\n"
     echo -e "\t\e[34mNOTE:\e[0m File names are hardcoded! Also skip trailing backslash!"
     echo -e "\tDefault: \e[32m${CN_CONFIG_ENVPATH}\e[0m\n"
-}
-
-apply_raspicamfix_msg() {
-    header_msg
-    echo -e "Should the Raspicam Fix be applied?\n"
-    echo -e "\t\e[34mNOTE:\e[0m\n\tThis should be only applied if you are"
-    echo -e "\tusing a Raspberry Pi! This will force Raspicams"
-    echo -e "\tusing the device path '/dev/video0'\n"
-    echo -e "Available are:\n Yes [y or Y]\n No [n or N]\n Hit ENTER for auto\n"
-    echo -e "In 'auto' mode Installer try to detect device and applies fix if SBC is a Pi!\n"
 }
 
 add_moonraker_entry_msg() {
@@ -152,14 +156,36 @@ create_config_header() {
     echo -e "BASE_USER=\"${CN_CONFIG_USER}\"";
     echo -e "CROWSNEST_USTREAMER_REPO_SHIP=\"${CN_USTREAMER_REPO}\"";
     echo -e "CROWSNEST_USTREAMER_REPO_BRANCH=\"${CN_USTREAMER_BRANCH}\""
+    echo -e "CROWSNEST_CAMERA_STREAMER_REPO_SHIP=\"${CN_CAMERA_STREAMER_REPO}\"";
+    echo -e "CROWSNEST_CAMERA_STREAMER_REPO_BRANCH=\"${CN_CAMERA_STREAMER_BRANCH}\""
     } >> "${CN_CONFIG_CONFIGFILE}"
+}
+
+specify_root_path() {
+    local reply
+    root_path_msg
+    default_path_msg
+    read -erp "Please enter path: " reply
+    if [[ -z "${reply}" ]]; then
+        echo -e "CROWSNEST_CONFIG_PATH=\"${CN_CONFIG_CONFIGPATH}\"" >> \
+        "${CN_CONFIG_CONFIGFILE}"
+        return 0
+    fi
+    if [[ -n "${reply}" ]]; then
+        CN_CONFIG_ROOTPATH="${reply}"
+        CN_CONFIG_CONFIGPATH="${CN_CONFIG_ROOTPATH}/config"
+        CN_CONFIG_LOGPATH="${CN_CONFIG_ROOTPATH}/logs"
+        CN_CONFIG_ENVPATH="${CN_CONFIG_ROOTPATH}/systemd"
+        CN_MOONRAKER_CONFIG_PATH="${CN_CONFIG_CONFIGPATH}/moonraker.conf"
+        return 0
+    fi
 }
 
 specify_config_path() {
     local reply
     config_path_msg
     default_path_msg
-    read -erp "Please enter path: " reply
+    read -erp "Please enter path: " -i "${CN_CONFIG_CONFIGPATH}" reply
     if [[ -z "${reply}" ]]; then
         echo -e "CROWSNEST_CONFIG_PATH=\"${CN_CONFIG_CONFIGPATH}\"" >> \
         "${CN_CONFIG_CONFIGFILE}"
@@ -176,7 +202,7 @@ specify_log_path() {
     local reply
     log_path_msg
     default_path_msg
-    read -erp "Please enter path: " reply
+    read -erp "Please enter path: " -i "${CN_CONFIG_LOGPATH}" reply
     if [[ -z "${reply}" ]]; then
         echo -e "CROWSNEST_LOG_PATH=\"${CN_CONFIG_LOGPATH}\"" >> \
         "${CN_CONFIG_CONFIGFILE}"
@@ -192,7 +218,7 @@ specify_env_path() {
     local reply
     env_path_msg
     default_path_msg
-    read -erp "Please enter path: " reply
+    read -erp "Please enter path: " -i "${CN_CONFIG_ENVPATH}" reply
     if [[ -z "${reply}" ]]; then
         echo -e "CROWSNEST_ENV_PATH=\"${CN_CONFIG_ENVPATH}\"" >> \
         "${CN_CONFIG_CONFIGFILE}"
@@ -202,29 +228,6 @@ specify_env_path() {
         echo -e "CROWSNEST_ENV_PATH=\"${reply}\"" >> "${CN_CONFIG_CONFIGFILE}"
         return 0
     fi
-}
-
-apply_raspicamfix() {
-    local reply
-    apply_raspicamfix_msg
-    read -erp "Enable Raspicamfix?: " reply
-    if [[ -z "${reply}" ]]; then
-        echo -e "CROWSNEST_RASPICAMFIX=\"auto\"" >> \
-        "${CN_CONFIG_CONFIGFILE}"
-        return 0
-    fi
-    while true; do
-        case "${reply}" in
-            [yY]*)
-                echo -e "CROWSNEST_RASPICAMFIX=\"1\"" >> "${CN_CONFIG_CONFIGFILE}"
-                break
-            ;;
-            [nN]*)
-                echo -e "CROWSNEST_RASPICAMFIX=\"0\"" >> "${CN_CONFIG_CONFIGFILE}"
-                break
-            ;;
-        esac
-    done
 }
 
 add_moonraker_entry() {
@@ -252,24 +255,15 @@ add_moonraker_entry() {
 
 ### Main func
 main() {
-    # Step 1: Welcome Message
     welcome_msg
     continue_config
-    # Step 2: Check for existing file
     check_config_file
-    # Step 3: Create config header
     create_config_header
-    # Step 4: Specify config file path.
+    specify_root_path
     specify_config_path
-    # Step 5: Specify log file path.
     specify_log_path
-    # Step 6: Specify env path.
     specify_env_path
-    # Step 7: Raspicam fix
-    apply_raspicamfix
-    # Step 8: Moonraker entry
     add_moonraker_entry
-    # Step 9: Display finished message
     goodbye_msg
 }
 
