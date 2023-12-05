@@ -90,15 +90,26 @@ function print_cfg {
 function print_cams {
     local total v4l
     v4l="$(find /dev/v4l/by-id/ -iname "*index0" 2> /dev/null | wc -l)"
-    total="$((v4l+($(detect_libcamera))))"
+    libcamera="$(detect_libcamera)"
+    legacy="$(detect_legacy)"
+    total="$((v4l+libcamera+legacy))"
     if [ "${total}" -eq 0 ]; then
         log_msg "ERROR: No usable Devices Found. Stopping $(basename "${0}")."
         exit 1
     else
         log_msg "INFO: Found ${total} total available Device(s)"
     fi
-    if [[ "$(detect_libcamera)" -ne 0 ]]; then
+    if [[ "${libcamera}" -ne 0 ]]; then
         log_msg "Detected 'libcamera' device -> $(get_libcamera_path)"
+    fi
+    if [[ "${legacy}" -ne 0 ]]; then
+        raspicam="$(v4l2-ctl --list-devices |  grep -A1 -e 'mmal' | \
+        awk 'NR==2 {print $1}')"
+        log_msg "Detected 'Raspicam' Device -> ${raspicam}"
+        if [[ ! "${CROWSNEST_LOG_LEVEL}" = "quiet" ]]; then
+            list_cam_formats "${raspicam}"
+            list_cam_v4l2ctrls "${raspicam}"
+        fi
     fi
     if [[ -d "/dev/v4l/by-id/" ]]; then
         detect_avail_cams

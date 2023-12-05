@@ -69,8 +69,7 @@ detect_libcamera() {
         else
             echo "0"
         fi
-    fi
-    if [[ "$(is_raspberry_pi)" = "0" ]]; then
+    else
         echo "0"
     fi
 }
@@ -82,6 +81,23 @@ get_libcamera_path() {
         libcamera-hello --list-cameras | sed '1,2d' \
         | grep "\(/base/*\)" | cut -d"(" -f2 | tr -d '$)'
     fi
+}
+
+# Determine connected "legacy" device
+function detect_legacy {
+    local avail
+    if [[ -f /proc/device-tree/model ]] &&
+    grep -q "Raspberry" /proc/device-tree/model; then
+        avail="$(vcgencmd get_camera | awk -F '=' '{ print $3 }' | cut -d',' -f1)"
+    else
+        avail="0"
+    fi
+    echo "${avail}"
+}
+
+function dev_is_legacy {
+    v4l2-ctl --list-devices |  grep -A1 -e 'mmal' | \
+    awk 'NR==2 {print $1}'
 }
 
 ## Determine if cam has H.264 Hardware encoder
